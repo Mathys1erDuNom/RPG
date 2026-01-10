@@ -18,6 +18,7 @@ async def on_ready():
 
 @bot.command()
 async def combat(ctx):
+    print("Commande !combat reçue")  # <-- test
     view = CombatView()
     await ctx.send(
         content=f"🧑 {view.joueur['nom']} PV: {view.joueur['pv']} | 👾 {view.ennemi['nom']} PV: {view.ennemi['pv']}\n"
