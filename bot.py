@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("DISCORD_TOKEN")
+VOICE_CHANNEL_ID = int(os.getenv("VOICE_CHANNEL_ID_COPAING"))
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -17,7 +18,11 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     print(f"✅ Bot connecté en tant que {bot.user}")
 
-from commands.fight import setup_fight
-setup_fight(bot)
+    channel = bot.get_channel(VOICE_CHANNEL_ID)
+
+    if channel:
+        await channel.send("🟢 **Le bot est connecté et prêt !** 🐊")
+    else:
+        print("❌ Salon introuvable (ID incorrect ou pas accessible)")
 
 bot.run(TOKEN)
