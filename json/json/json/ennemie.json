@@ -1,0 +1,10 @@
+{
+    "nom": "Gobelin",
+    "pv": 15,
+    "vitesse": 3,
+    "attaques": [
+      {"nom": "Coup de poing", "degats": 2},
+      {"nom": "Jet de caillou", "degats": 3}
+    ]
+  }
+  
