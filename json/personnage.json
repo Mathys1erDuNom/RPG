@@ -1,14 +1,14 @@
 {
   "nom": "CrocoBot",
-  "pv": 20,
-  "pv_max": 20,
-  "vitesse": 5,
+  "pv": 100,
+  "pv_max": 100,
+  "vitesse": 10,
   "magie": 6,
   "armure": 30,
   "armure_magique": 20,
   "image": "images/personnages/chevalier.jpg",
   "attaques": [
-    {"nom": "Morsure", "degats": 4, "type": "physique"},
+    {"nom": "Morsure", "degats": 24, "type": "physique"},
     {"nom": "Griffe", "degats": 3, "type": "physique"}
   ]
 }
