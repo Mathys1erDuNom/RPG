@@ -1,14 +1,31 @@
-{
-  "nom": "Gobelin",
-  "pv": 15,
-  "pv_max": 15,
-  "vitesse": 5,
-  "magie": 6,
-  "armure": 5,
-  "armure_magique": 5,
-  "image": "images/ennemies/gobelin.png",
-  "attaques": [
-    {"nom": "Morsure", "degats": 4, "type": "physique"},
-    {"nom": "Griffe", "degats": 3, "type": "physique"}
-  ]
-}
+[
+  {
+    "nom": "Gobelin",
+    "pv": 15,
+    "pv_max": 15,
+    "vitesse": 5,
+    "magie": 6,
+    "armure": 5,
+    "armure_magique": 5,
+    "image": "images/ennemies/gobelin.png",
+    "attaques": [
+      {"nom": "Morsure", "degats": 4, "type": "physique"},
+      {"nom": "Griffe", "degats": 3, "type": "physique"}
+    ]
+  },
+  {
+    "nom": "Orc",
+    "pv": 25,
+    "pv_max": 25,
+    "vitesse": 3,
+    "magie": 2,
+    "armure": 10,
+    "armure_magique": 3,
+    "image": "images/ennemies/orc.jpg",
+    "attaques": [
+      {"nom": "Coup de masse", "degats": 6, "type": "physique"},
+      {"nom": "Hurlement", "degats": 2, "type": "magique"}
+    ]
+  }
+
+]
