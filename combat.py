@@ -112,8 +112,7 @@ class CombatView(View):
         # 1️⃣ Annonce de l'attaque ennemie
         await self.update_message(interaction, extra_text=f"👾 **{self.ennemi['nom']} utilise {attaque['nom']}...**")
         
-        # Pause dramatique pour que le joueur voie l'attaque
-        await asyncio.sleep(1.5)
+      
         
         # 2️⃣ Calcul des dégâts et application
         degats = calcul_degats(attaque, self.ennemi, self.joueur)
