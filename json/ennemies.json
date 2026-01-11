@@ -40,6 +40,34 @@
       {"nom": "Massue", "degats": 8, "type": "physique"},
       {"nom": "Piétinement", "degats": 6, "type": "physique"}
     ]
+  },
+  {
+    "nom": "Troll2",
+    "pv": 40,
+    "pv_max": 40,
+    "vitesse": 3,
+    "magie": 2,
+    "armure": 10,
+    "armure_magique": 5,
+    "image": "images/ennemies/troll.jpeg",
+    "attaques": [
+      {"nom": "Massue", "degats": 8, "type": "physique"},
+      {"nom": "Piétinement", "degats": 6, "type": "physique"}
+    ]
+  },
+  {
+    "nom": "Troll3",
+    "pv": 40,
+    "pv_max": 40,
+    "vitesse": 3,
+    "magie": 2,
+    "armure": 10,
+    "armure_magique": 5,
+    "image": "images/ennemies/troll.jpeg",
+    "attaques": [
+      {"nom": "Massue", "degats": 8, "type": "physique"},
+      {"nom": "Piétinement", "degats": 6, "type": "physique"}
+    ]
   }
 
 ]
