@@ -1,10 +1,13 @@
 {
-    "nom": "Gobelin",
-    "pv": 15,
-    "vitesse": 3,
-    "attaques": [
-      {"nom": "Coup de poing", "degats": 2},
-      {"nom": "Jet de caillou", "degats": 3}
-    ]
-  }
-  
+  "nom": "Gobelin",
+  "pv": 15,
+  "pv_max": 15,
+  "vitesse": 5,
+  "magie": 6,
+  "armure": 5,          
+  "armure_magique": 5,   
+  "attaques": [
+    {"nom": "Morsure", "degats": 4, "type": "physique"},
+    {"nom": "Griffe", "degats": 3, "type": "physique"}
+  ]
+}

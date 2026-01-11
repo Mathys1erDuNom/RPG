@@ -1,10 +1,13 @@
 {
-    "nom": "CrocoBot",
-    "pv": 20,
-    "vitesse": 5,
-    "attaques": [
-      {"nom": "Morsure", "degats": 4},
-      {"nom": "Griffe", "degats": 3}
-    ]
-  }
-  
+  "nom": "CrocoBot",
+  "pv": 20,
+  "pv_max": 20,
+  "vitesse": 5,
+  "magie": 6,
+  "armure": 30,           
+  "armure_magique": 20,   
+  "attaques": [
+    {"nom": "Morsure", "degats": 4, "type": "physique"},
+    {"nom": "Griffe", "degats": 3, "type": "physique"}
+  ]
+}

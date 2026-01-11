@@ -11,6 +11,24 @@ def load_json(file):
         return json.load(f)
 
 
+def calcul_degats(attaque, attaquant, defenseur):
+    """
+    Calcule les dégâts d'une attaque en prenant en compte :
+    - type de l'attaque (physique/magique)
+    - magie de l'attaquant
+    - armure ou armure magique du défenseur en %
+    """
+    degats = attaque["degats"]
+
+    if attaque["type"] == "magique":
+        degats += attaquant.get("magie", 0)
+        degats *= (1 - defenseur.get("armure_magique", 0) / 100)
+    else:
+        degats *= (1 - defenseur.get("armure", 0) / 100)
+
+    return max(1, int(degats))  # Toujours au moins 1 PV
+
+
 class CombatView(View):
     def __init__(self):
         super().__init__(timeout=None)
@@ -68,7 +86,8 @@ class CombatView(View):
             if a["nom"] == self.select_attacks.values[0]
         )
 
-        degats = attaque["degats"]
+        # Calcul des dégâts avec le nouveau système %
+        degats = calcul_degats(attaque, self.joueur, self.ennemi)
         self.ennemi["pv"] -= degats
 
         # Victoire joueur
@@ -94,7 +113,9 @@ class CombatView(View):
 
     async def ennemi_attaque(self, interaction: discord.Interaction):
         attaque = random.choice(self.ennemi["attaques"])
-        degats = attaque["degats"]
+
+        # Calcul des dégâts avec le nouveau système %
+        degats = calcul_degats(attaque, self.ennemi, self.joueur)
 
         # Annonce attaque ennemie
         await interaction.message.edit(
@@ -105,7 +126,7 @@ class CombatView(View):
             view=None
         )
 
-        # Pause
+        # Pause dramatique
         await asyncio.sleep(1.5)
 
         # Application des dégâts
