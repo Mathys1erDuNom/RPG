@@ -106,23 +106,31 @@ class CombatView(View):
         await self.ennemi_attaque(interaction)
 
     async def ennemi_attaque(self, interaction: discord.Interaction):
+        # Choix de l'attaque
         attaque = random.choice(self.ennemi["attaques"])
-        degats = calcul_degats(attaque, self.ennemi, self.joueur)
-
-        # Annonce attaque ennemie
+        
+        # 1️⃣ Annonce de l'attaque ennemie
         await self.update_message(interaction, extra_text=f"👾 **{self.ennemi['nom']} utilise {attaque['nom']}...**")
-
-        # Pause dramatique
+        
+        # Pause dramatique pour que le joueur voie l'attaque
         await asyncio.sleep(1.5)
-
-        # Application des dégâts
+        
+        # 2️⃣ Calcul des dégâts et application
+        degats = calcul_degats(attaque, self.ennemi, self.joueur)
         self.joueur["pv"] -= degats
 
-        # Défaite joueur
+        # Affichage des dégâts infligés
         if self.joueur["pv"] <= 0:
-            await self.update_message(interaction, extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV !**\n💀 **Vous avez été vaincu...**")
+            # Joueur KO
+            await self.update_message(
+                interaction,
+                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n💀 **Vous avez été vaincu...**"
+            )
             return
-
-        # Retour au joueur
-        self.tour_joueur = True
-        await self.update_message(interaction, extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV !**")
+        else:
+            # Retour au tour du joueur
+            self.tour_joueur = True
+            await self.update_message(
+                interaction,
+                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
+            )
