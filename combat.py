@@ -31,7 +31,7 @@ def calcul_degats(attaque, attaquant, defenseur):
     return max(1, int(degats))
 
 class CombatView(View):
-    def __init__(self, nb_ennemis=3):
+    def __init__(self, nb_ennemis=4):
         super().__init__(timeout=None)
 
         # Charger joueur et ennemis
