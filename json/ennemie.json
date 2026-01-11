@@ -4,8 +4,9 @@
   "pv_max": 15,
   "vitesse": 5,
   "magie": 6,
-  "armure": 5,          
-  "armure_magique": 5,   
+  "armure": 5,
+  "armure_magique": 5,
+  "image": "images/ennemies/gobelin.png",
   "attaques": [
     {"nom": "Morsure", "degats": 4, "type": "physique"},
     {"nom": "Griffe", "degats": 3, "type": "physique"}

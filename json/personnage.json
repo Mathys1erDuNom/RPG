@@ -4,8 +4,9 @@
   "pv_max": 20,
   "vitesse": 5,
   "magie": 6,
-  "armure": 30,           
-  "armure_magique": 20,   
+  "armure": 30,
+  "armure_magique": 20,
+  "image": "images/personnages/chevalier.jpg",
   "attaques": [
     {"nom": "Morsure", "degats": 4, "type": "physique"},
     {"nom": "Griffe", "degats": 3, "type": "physique"}
