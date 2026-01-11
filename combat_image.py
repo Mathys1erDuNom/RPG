@@ -8,7 +8,7 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     - Fond
     - Joueur à gauche
     - Ennemi à droite
-    - Barres de PV
+    - Barres de PV avec couleur pleine + fond gris
     Retourne un BytesIO pour Discord
     """
     # Charger images
@@ -28,22 +28,38 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     draw = ImageDraw.Draw(fond)
     font = ImageFont.load_default()
 
-    # Joueur
-    pv_joueur = joueur["pv"]
-    pv_max_joueur = joueur["pv_max"]
+    # Paramètres barre
     barre_largeur = 150
-    couleur_pv = (0, 255, 0)
-    draw.rectangle(
-        (50, fond.height - 220, 50 + int(barre_largeur * pv_joueur / pv_max_joueur), fond.height - 210),
-        fill=couleur_pv
-    )
-    draw.text((50, fond.height - 230), f"{joueur['nom']} {pv_joueur}/{pv_max_joueur} PV", fill="white", font=font)
+    barre_hauteur = 10
 
-    # Ennemi
-    pv_ennemi = ennemi["pv"]
-    pv_max_ennemi = ennemi["pv_max"]
+    # ------------------ Joueur ------------------
+    pv_joueur = max(joueur["pv"], 0)
+    pv_max_joueur = joueur["pv_max"]
+
+    # Fond gris
     draw.rectangle(
-        (fond.width - 200, 30, fond.width - 200 + int(barre_largeur * pv_ennemi / pv_max_ennemi), 40),
+        (50, fond.height - 220, 50 + barre_largeur, fond.height - 220 + barre_hauteur),
+        fill=(50, 50, 50)  # gris foncé
+    )
+    # Partie pleine (verte)
+    draw.rectangle(
+        (50, fond.height - 220, 50 + int(barre_largeur * pv_joueur / pv_max_joueur), fond.height - 220 + barre_hauteur),
+        fill=(0, 255, 0)
+    )
+    draw.text((50, fond.height - 235), f"{joueur['nom']} {pv_joueur}/{pv_max_joueur} PV", fill="white", font=font)
+
+    # ------------------ Ennemi ------------------
+    pv_ennemi = max(ennemi["pv"], 0)
+    pv_max_ennemi = ennemi["pv_max"]
+
+    # Fond gris
+    draw.rectangle(
+        (fond.width - 200, 30, fond.width - 200 + barre_largeur, 30 + barre_hauteur),
+        fill=(50, 50, 50)
+    )
+    # Partie pleine (rouge)
+    draw.rectangle(
+        (fond.width - 200, 30, fond.width - 200 + int(barre_largeur * pv_ennemi / pv_max_ennemi), 30 + barre_hauteur),
         fill=(255, 0, 0)
     )
     draw.text((fond.width - 200, 10), f"{ennemi['nom']} {pv_ennemi}/{pv_max_ennemi} PV", fill="white", font=font)
