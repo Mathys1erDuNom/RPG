@@ -5,11 +5,20 @@ import json
 import random
 import io
 
+
+
+
 from combat_image import creer_image_combat  # pas besoin de creer_image_fin
 
 def load_json(file):
     with open(file, "r", encoding="utf-8") as f:
         return json.load(f)
+    
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+all_enemies = load_json(os.path.join(script_dir, "json/ennemies.json")) 
+personnage = load_json(os.path.join(script_dir, "json/personnage.json"))
+
 
 def calcul_degats(attaque, attaquant, defenseur):
     """Calcule les dégâts d'une attaque en prenant en compte physique/magique et armures."""
@@ -27,7 +36,7 @@ class CombatView(View):
 
         # Charger joueur et ennemis
         self.joueur = load_json("json/personnage.json")
-        all_enemies = load_json("json/ennemies.json")
+       
 
         # Sélection aléatoire des ennemis à affronter
         self.ennemis_queue = random.sample(all_enemies, k=min(nb_ennemis, len(all_enemies)))
