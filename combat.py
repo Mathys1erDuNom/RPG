@@ -37,11 +37,17 @@ class CombatView(View):
         self.select_attacks.callback = self.joueur_attaque
         self.add_item(self.select_attacks)
 
-    async def update_message(self, interaction):
-        content = (
-            f"🧑 {self.joueur['nom']} PV: {self.joueur['pv']} | "
-            f"👾 {self.ennemi['nom']} PV: {self.ennemi['pv']}\n"
+    def pv_text(self):
+        return (
+            f"🧑 {self.joueur['nom']} ❤️ {max(self.joueur['pv'], 0)} PV | "
+            f"👾 {self.ennemi['nom']} ❤️ {max(self.ennemi['pv'], 0)} PV\n"
         )
+
+    async def update_message(self, interaction, extra_text=""):
+        content = self.pv_text()
+        if extra_text:
+            content += extra_text + "\n"
+
         content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
 
         await interaction.message.edit(
@@ -50,65 +56,76 @@ class CombatView(View):
         )
 
     async def joueur_attaque(self, interaction: discord.Interaction):
-        # Pas ton tour
         if not self.tour_joueur:
             await interaction.response.defer()
             return
 
-        # ACK interaction (UNE seule fois)
+        # ACK interaction
         await interaction.response.defer()
 
-        # Récupération attaque
         attaque = next(
             a for a in self.joueur["attaques"]
             if a["nom"] == self.select_attacks.values[0]
         )
 
-        # Dégâts joueur → ennemi
-        self.ennemi["pv"] -= attaque["degats"]
+        degats = attaque["degats"]
+        self.ennemi["pv"] -= degats
 
         # Victoire joueur
         if self.ennemi["pv"] <= 0:
             await interaction.message.edit(
-                content=f"🏆 **Vous avez vaincu {self.ennemi['nom']} !**",
+                content=(
+                    self.pv_text() +
+                    f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
+                    f"🏆 **Vous avez vaincu {self.ennemi['nom']} !**"
+                ),
                 view=None
             )
             return
 
-        # Tour ennemi
+        # Passage au tour ennemi
         self.tour_joueur = False
-        await self.update_message(interaction)
+        await self.update_message(
+            interaction,
+            extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**"
+        )
 
-        # Pause + attaque ennemie
         await self.ennemi_attaque(interaction)
 
     async def ennemi_attaque(self, interaction: discord.Interaction):
         attaque = random.choice(self.ennemi["attaques"])
+        degats = attaque["degats"]
 
         # Annonce attaque ennemie
         await interaction.message.edit(
             content=(
-                f"🧑 {self.joueur['nom']} PV: {self.joueur['pv']} | "
-                f"👾 {self.ennemi['nom']} PV: {self.ennemi['pv']}\n"
+                self.pv_text() +
                 f"👾 **{self.ennemi['nom']} utilise {attaque['nom']}...**"
             ),
             view=None
         )
 
-        # ⏳ Pause dramatique
+        # Pause
         await asyncio.sleep(1.5)
 
-        # Dégâts ennemis
-        self.joueur["pv"] -= attaque["degats"]
+        # Application des dégâts
+        self.joueur["pv"] -= degats
 
         # Défaite joueur
         if self.joueur["pv"] <= 0:
             await interaction.message.edit(
-                content=f"💀 **Vous avez été vaincu par {self.ennemi['nom']}...**",
+                content=(
+                    self.pv_text() +
+                    f"💥 **{self.ennemi['nom']} inflige {degats} PV !**\n"
+                    f"💀 **Vous avez été vaincu...**"
+                ),
                 view=None
             )
             return
 
         # Retour au joueur
         self.tour_joueur = True
-        await self.update_message(interaction)
+        await self.update_message(
+            interaction,
+            extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV !**"
+        )
