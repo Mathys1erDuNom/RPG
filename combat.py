@@ -21,13 +21,27 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 personnage = load_json(os.path.join(script_dir, "json/personnage.json"))
 
 def calcul_degats(attaque, attaquant, defenseur):
-    """Calcule les dégâts d'une attaque en prenant en compte physique/magique et armures."""
+    """Calcule les dégâts d'une attaque en prenant en compte les ratios force/magie et les armures."""
+    # Dégâts de base
     degats = attaque["degats"]
+    
+    # Ajouter les bonus selon les ratios
+    ratio_attk = attaque.get("ratioattk", 0) / 100
+    ratio_magie = attaque.get("ratiomagie", 0) / 100
+    
+    degats += attaquant.get("force", 0) * ratio_attk
+    degats += attaquant.get("magie", 0) * ratio_magie
+    
+    # Appliquer la réduction d'armure selon le type d'attaque
     if attaque["type"] == "magique":
-        degats += attaquant.get("magie", 0)
         degats *= (1 - defenseur.get("armure_magique", 0) / 100)
-    else:
+    elif attaque["type"] == "physique":
         degats *= (1 - defenseur.get("armure", 0) / 100)
+    elif attaque["type"] == "hybride":
+        # Pour les attaques hybrides, moyenne des deux armures
+        reduction = (defenseur.get("armure", 0) + defenseur.get("armure_magique", 0)) / 2
+        degats *= (1 - reduction / 100)
+    
     return max(1, int(degats))
 
 class CombatView(View):

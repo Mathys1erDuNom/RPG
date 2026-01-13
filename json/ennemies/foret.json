@@ -1,31 +1,58 @@
 [
   
   {
-    "nom": "Orc",
-    "pv": 25,
-    "pv_max": 25,
-    "vitesse": 3,
-    "magie": 2,
-    "armure": 10,
-    "armure_magique": 3,
-    "image": "images/region/foret/ennemies/orc.jpeg",
-    "attaques": [
-      {"nom": "Coup de masse", "degats": 6, "type": "physique"},
-      {"nom": "Hurlement", "degats": 2, "type": "magique"}
-    ]
-  },
-  {
     "nom": "Troll",
-    "pv": 40,
-    "pv_max": 40,
-    "vitesse": 3,
+    "pv": 15,
+    "pv_max": 15,
+    "vitesse": 5,
+    "force": 3,
     "magie": 2,
-    "armure": 10,
+    "armure": 5,
     "armure_magique": 5,
     "image": "images/region/foret/ennemies/troll.jpeg",
     "attaques": [
-      {"nom": "Massue", "degats": 8, "type": "physique"},
-      {"nom": "Piétinement", "degats": 6, "type": "physique"}
+      {
+        "nom": "Morsure",
+        "degats": 4,
+        "type": "physique",
+        "ratioattk": 100,
+        "ratiomagie": 0
+      },
+      {
+        "nom": "Griffe",
+        "degats": 3,
+        "type": "physique",
+        "ratioattk": 80,
+        "ratiomagie": 0
+      }
+    ]
+  },
+  {
+    "nom": "Orc",
+    "pv": 50,
+    "pv_max": 50,
+    "vitesse": 5,
+    "force": 40,
+    "magie": 2,
+    "armure": 5,
+    "armure_magique": 5,
+    "image": "images/region/foret/ennemies/orc.jpeg",
+    "attaques": [
+      {
+        "nom": "Morsure",
+        "degats": 4,
+        "type": "physique",
+        "ratioattk": 100,
+        "ratiomagie": 0
+      },
+      {
+        "nom": "Griffe",
+        "degats": 3,
+        "type": "physique",
+        "ratioattk": 80,
+        "ratiomagie": 0
+      }
     ]
   }
+  
 ]

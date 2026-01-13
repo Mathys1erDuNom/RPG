@@ -3,12 +3,33 @@
   "pv": 100,
   "pv_max": 100,
   "vitesse": 10,
+  "force": 15,
   "magie": 6,
   "armure": 30,
   "armure_magique": 20,
   "image": "images/personnages/chevalier.jpg",
   "attaques": [
-    {"nom": "Morsure", "degats": 50, "type": "physique"},
-    {"nom": "Griffe", "degats": 3, "type": "physique"}
+    {
+      "nom": "Morsure",
+      "degats": 50,
+      "type": "physique",
+      "ratioattk": 100,
+      "ratiomagie": 0
+    },
+    {
+      "nom": "Griffe",
+      "degats": 3,
+      "type": "physique",
+      "ratioattk": 80,
+      "ratiomagie": 0
+    },
+    {
+      "nom": "Boule de Feu",
+      "degats": 30,
+      "type": "magique",
+      "ratioattk": 0,
+      "ratiomagie": 150
+    }
+   
   ]
 }

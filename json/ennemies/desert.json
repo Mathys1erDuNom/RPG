@@ -1,17 +1,27 @@
-[
-  {
-    "nom": "Gobelin",
-    "pv": 15,
-    "pv_max": 15,
-    "vitesse": 5,
-    "magie": 6,
-    "armure": 5,
-    "armure_magique": 5,
-    "image": "images/region/desert/ennemies/gobelin.png",
-    "attaques": [
-      {"nom": "Morsure", "degats": 4, "type": "physique"},
-      {"nom": "Griffe", "degats": 3, "type": "physique"}
-    ]
-  }
-
-]
+{
+  "nom": "Gobelin",
+  "pv": 15,
+  "pv_max": 15,
+  "vitesse": 5,
+  "force": 3,
+  "magie": 2,
+  "armure": 5,
+  "armure_magique": 5,
+  "image": "images/region/desert/ennemies/gobelin.png",
+  "attaques": [
+    {
+      "nom": "Morsure",
+      "degats": 4,
+      "type": "physique",
+      "ratioattk": 100,
+      "ratiomagie": 0
+    },
+    {
+      "nom": "Griffe",
+      "degats": 3,
+      "type": "physique",
+      "ratioattk": 80,
+      "ratiomagie": 0
+    }
+  ]
+}
