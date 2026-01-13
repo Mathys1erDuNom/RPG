@@ -177,7 +177,7 @@ class CombatView(View):
                 
                 # Ouvrir le shop
                 shop_view = ShopView(self.joueur, reprendre_combat)
-                file = discord.File(fp="images/shop/shop.png", filename="shop.png")
+                file = discord.File(fp="images/shop.png", filename="shop.png")
                 await interaction.message.edit(
                     content=shop_view.get_shop_content() + f"\n🏆 **Région {self.region.capitalize()} terminée !**\n💰 **+50 Gold de récompense !**",
                     view=shop_view,
