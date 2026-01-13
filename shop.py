@@ -189,11 +189,18 @@ class ShopView(View):
                 if valeur not in [a["nom"] for a in self.joueur["attaques"]]:
                     # Charger la bibliothèque d'attaques
                     script_dir = os.path.dirname(os.path.abspath(__file__))
-                    attaques_dispo = load_json(os.path.join(script_dir, "json/attaques.json"))
-                    nouvelle_attaque = next((a for a in attaques_dispo if a["nom"] == valeur), None)
-                    if nouvelle_attaque:
-                        self.joueur["attaques"].append(nouvelle_attaque)
-                        message_effet += f"⚔️ Nouvelle attaque débloquée : {valeur} !\n"
+                    try:
+                        attaques_dispo = load_json(os.path.join(script_dir, "json/attaques.json"))
+                        nouvelle_attaque = next((a for a in attaques_dispo if a["nom"] == valeur), None)
+                        if nouvelle_attaque:
+                            self.joueur["attaques"].append(nouvelle_attaque)
+                            message_effet += f"⚔️ Nouvelle attaque débloquée : {valeur} !\n"
+                        else:
+                            message_effet += f"⚠️ Attaque '{valeur}' introuvable dans la bibliothèque\n"
+                    except FileNotFoundError:
+                        message_effet += f"⚠️ Fichier attaques.json introuvable\n"
+                else:
+                    message_effet += f"ℹ️ Vous possédez déjà l'attaque {valeur}\n"
         
         # Retirer l'objet de l'inventaire si c'est un consommable
         if obj.get("consommable", True):
