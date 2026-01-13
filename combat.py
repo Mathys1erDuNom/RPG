@@ -17,6 +17,10 @@ def load_json(file):
     with open(file, "r", encoding="utf-8") as f:
         return json.load(f)
 
+def save_json(file, data):
+    with open(file, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 personnage = load_json(os.path.join(script_dir, "json/personnage.json"))
 
@@ -61,6 +65,11 @@ class CombatView(View):
         
         # Charger les ennemis de la région actuelle
         region_enemies = load_json(f"json/ennemies/{self.region}.json")
+        # S'assurer que c'est une liste
+        if isinstance(region_enemies, dict):
+            region_enemies = [region_enemies]
+        elif not isinstance(region_enemies, list):
+            region_enemies = list(region_enemies)
         self.ennemis_queue = random.sample(region_enemies, k=min(nb_ennemis_par_region, len(region_enemies)))
         self.ennemi = self.ennemis_queue.pop(0)  # premier ennemi
 
@@ -133,22 +142,51 @@ class CombatView(View):
                 )
                 return
             elif self.regions_queue:
-                # Passer à la région suivante
-                self.region = self.regions_queue.pop(0)
-                self.image_fond = f"images/fond/{self.region}.png"
+                # Passer à la région suivante - OUVRIR LE SHOP
+                from shop import ShopView
                 
-                # Charger les ennemis de la nouvelle région
-                region_enemies = load_json(f"json/ennemies/{self.region}.json")
-                self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
-                self.ennemi = self.ennemis_queue.pop(0)
-                self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
+                # Sauvegarder l'état du joueur
+                save_json("json/personnage.json", self.joueur)
                 
-                await self.update_message(
-                    interaction,
-                    extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🏆 **Région terminée !**\n"
-                               f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
-                               f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
+                # Callback pour reprendre le combat après le shop
+                async def reprendre_combat(shop_interaction):
+                    # Recharger le joueur mis à jour
+                    self.joueur = load_json("json/personnage.json")
+                    
+                    # Charger la nouvelle région
+                    self.region = self.regions_queue.pop(0)
+                    self.image_fond = f"images/fond/{self.region}.png"
+                    
+                    # Charger les ennemis de la nouvelle région
+                    region_enemies = load_json(f"json/ennemies/{self.region}.json")
+                    # S'assurer que c'est une liste
+                    if isinstance(region_enemies, dict):
+                        region_enemies = [region_enemies]
+                    elif not isinstance(region_enemies, list):
+                        region_enemies = list(region_enemies)
+                    self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
+                    self.ennemi = self.ennemis_queue.pop(0)
+                    self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
+                    
+                    # Reprendre le combat
+                    await self.update_message(
+                        shop_interaction,
+                        extra_text=f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
+                                   f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
+                    )
+                
+                # Ouvrir le shop
+                shop_view = ShopView(self.joueur, reprendre_combat)
+                file = discord.File(fp="images/shop/shop.png", filename="shop.png")
+                await interaction.message.edit(
+                    content=shop_view.get_shop_content() + f"\n🏆 **Région {self.region.capitalize()} terminée !**\n💰 **+50 Gold de récompense !**",
+                    view=shop_view,
+                    attachments=[file]
                 )
+                
+                # Donner de l'or au joueur
+                self.joueur["gold"] = self.joueur.get("gold", 0) + 50
+                save_json("json/personnage.json", self.joueur)
                 return
             else:
                 # Toutes les régions terminées
