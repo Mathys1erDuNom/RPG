@@ -179,13 +179,13 @@ class CombatView(View):
                 shop_view = ShopView(self.joueur, reprendre_combat)
                 file = discord.File(fp="images/shop.png", filename="shop.png")
                 await interaction.message.edit(
-                    content=shop_view.get_shop_content() + f"\n🏆 **Région {self.region.capitalize()} terminée !**\n💰 **+50 Gold de récompense !**",
+                    content=shop_view.get_shop_content() + f"\n🏆 **Région {self.region.capitalize()} terminée !**\n💰 **+500 Gold de récompense !**",
                     view=shop_view,
                     attachments=[file]
                 )
                 
                 # Donner de l'or au joueur
-                self.joueur["gold"] = self.joueur.get("gold", 0) + 50
+                self.joueur["gold"] = self.joueur.get("gold", 0) + 500
                 save_json("json/personnage.json", self.joueur)
                 return
             else:

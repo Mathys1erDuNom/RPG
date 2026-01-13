@@ -102,7 +102,7 @@
       "id": "epee_legendaire",
       "nom": "Épée Légendaire",
       "description": "Débloque l'attaque 'Frappe Dévastatrice'",
-      "prix": 200,
+      "prix": 50,
       "type": "arme",
       "consommable": true,
       "effets": {
@@ -113,7 +113,7 @@
       "id": "anneau_equilibre",
       "nom": "Anneau d'Équilibre",
       "description": "Augmente Force et Magie de 2",
-      "prix": 130,
+      "prix": 50,
       "type": "armure",
       "consommable": true,
       "effets": {
@@ -125,7 +125,7 @@
       "id": "bouclier_titan",
       "nom": "Bouclier du Titan",
       "description": "Augmente Armure physique de 15% et PV Max de 15",
-      "prix": 180,
+      "prix": 50,
       "type": "armure",
       "consommable": true,
       "effets": {
