@@ -111,10 +111,10 @@ class CombatView(View):
             elif self.regions_queue:
                 # Passer à la région suivante
                 self.region = self.regions_queue.pop(0)
-                self.image_fond = f"images/fond/region/{self.region}.png"
+                self.image_fond = f"images/fond/{self.region}.png"
                 
                 # Charger les ennemis de la nouvelle région
-                region_enemies = load_json(f"json/region/{self.region}.json")
+                region_enemies = load_json(f"json/ennemies/{self.region}.json")
                 self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
                 self.ennemi = self.ennemis_queue.pop(0)
                 self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
