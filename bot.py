@@ -25,12 +25,17 @@ async def on_ready():
         print("❌ Salon introuvable (ID incorrect ou bot n'a pas les permissions)")
 
 @bot.command()
-async def combat(ctx):
-    print("Commande !combat reçue")  # <-- test
-    view = CombatView()
+async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
+    """Lance un combat avec des régions et des ennemis."""
+    view = CombatView(nb_regions=nb_regions, nb_ennemis_par_region=nb_ennemis)
+    
+    # Générer l'image initiale du combat
+    file = view.get_combat_image()
+    
+    # Envoyer le message avec l'image et le contenu
     await ctx.send(
-        content=f"🧑 {view.joueur['nom']} PV: {view.joueur['pv']} | 👾 {view.ennemi['nom']} PV: {view.ennemi['pv']}\n"
-                f"{'C’est votre tour !' if view.tour_joueur else 'C’est au tour de l’ennemi...'}",
+        content=view.get_initial_message_content(),
+        file=file,
         view=view
     )
 

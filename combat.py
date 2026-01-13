@@ -62,6 +62,11 @@ class CombatView(View):
         self.select_attacks.callback = self.joueur_attaque
         self.add_item(self.select_attacks)
 
+    def get_combat_image(self):
+        """Génère et retourne l'image du combat."""
+        image_combat = creer_image_combat(self.joueur, self.ennemi, self.image_fond)
+        return discord.File(fp=image_combat, filename="combat.png")
+
     def pv_text(self):
         """Texte des PV du joueur et de l'ennemi."""
         return (
@@ -70,10 +75,15 @@ class CombatView(View):
             f"👾 {self.ennemi['nom']} ❤️ {max(self.ennemi['pv'], 0)} / {self.ennemi.get('pv_max', self.ennemi['pv'])} PV\n"
         )
 
+    def get_initial_message_content(self):
+        """Retourne le contenu du message initial avec l'image."""
+        content = self.pv_text()
+        content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
+        return content
+
     async def update_message(self, interaction, extra_text=""):
         """Met à jour le message Discord avec l'image du combat et le texte."""
-        image_combat = creer_image_combat(self.joueur, self.ennemi, self.image_fond)
-        file = discord.File(fp=image_combat, filename="combat.png")
+        file = self.get_combat_image()
 
         content = self.pv_text()
         if extra_text:
