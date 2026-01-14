@@ -14,6 +14,7 @@ class CharacterSelectView(View):
         self.user = user
         self.personnages = load_personnages()
 
+        # Ajouter un bouton pour chaque personnage
         for perso in self.personnages:
             self.add_item(CharacterButton(perso, user))
 
@@ -29,10 +30,13 @@ class CharacterButton(Button):
 
     async def callback(self, interaction: discord.Interaction):
         if interaction.user != self.user:
-            await interaction.response.send_message("❌ Ce n'est pas ton choix.", ephemeral=True)
+            await interaction.response.send_message(
+                "❌ Ce n'est pas ton choix.",
+                ephemeral=True
+            )
             return
 
-        # Sauvegarder le personnage choisi
+        # Mettre à jour toutes les stats du joueur dans la DB
         update_player(
             str(self.user.id),
             personnage_id=self.perso["id"],
@@ -44,10 +48,11 @@ class CharacterButton(Button):
             armure=self.perso["armure"],
             armure_magique=self.perso["armure_magique"],
             vitesse=self.perso["vitesse"],
-            image=self.perso["image"]
+            image=self.perso["image"],
+            attaques=self.perso["attaques"]
         )
 
         await interaction.response.send_message(
-            f"✅ **{self.perso['nom']} sélectionné !**\nTu peux lancer le combat.",
+            f"✅ **{self.perso['nom']} sélectionné !**\nTu peux maintenant lancer le combat avec `!combat`.",
             ephemeral=True
         )
