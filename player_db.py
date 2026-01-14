@@ -26,17 +26,32 @@ conn.commit()
 
 
 def get_player(user_id):
-    cur.execute("SELECT * FROM player_stats WHERE user_id = %s", (user_id,))
+    cur.execute("SELECT * FROM players WHERE user_id = ?", (user_id,))
     row = cur.fetchone()
-    if not row:
-        return None
 
-    keys = [
-        "user_id", "nom", "pv", "pv_max",
-        "force", "magie", "armure",
-        "armure_magique", "vitesse"
-    ]
-    return dict(zip(keys, row))
+    if row:
+        return dict(row)
+
+    # 🔧 création automatique
+    joueur = {
+        "user_id": user_id,
+        "nom": "Aventurier",
+        "pv": 100,
+        "pv_max": 100,
+        "force": 10,
+        "magie": 5,
+        "armure": 5,
+        "armure_magique": 5,
+        "vitesse": 10
+    }
+
+    cur.execute("""
+        INSERT INTO players (user_id, nom, pv, pv_max, force, magie, armure, armure_magique, vitesse)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, tuple(joueur.values()))
+    conn.commit()
+
+    return joueur
 
 
 def update_player(user_id, **stats):

@@ -57,6 +57,9 @@ class CombatView(View):
 
         self.user_id = str(user.id)
         self.joueur = get_player(self.user_id)
+        print("DEBUG joueur:", self.joueur)
+        if self.joueur is None:
+            raise ValueError(f"Joueur {self.user_id} introuvable. Le joueur doit être créé avant le combat.")
         self.joueur["attaques"] = get_attacks(self.user_id)
         
         # Configuration des régions
@@ -171,6 +174,9 @@ class CombatView(View):
                     # Recharger le joueur mis à jour
                     self.user_id = str(interaction.user.id)
                     self.joueur = get_player(self.user_id)
+                    print("DEBUG joueur:", self.joueur)
+                    if self.joueur is None:
+                        raise ValueError(f"Joueur {self.user_id} introuvable. Le joueur doit être créé avant le combat.")
                     self.joueur["attaques"] = get_attacks(self.user_id)
                     self.refresh_attack_select()
                     
