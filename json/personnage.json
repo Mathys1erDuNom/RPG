@@ -1,59 +1,35 @@
-[
-  {
-    "id": "chevalier",
-    "nom": "CrocoBot",
-    "pv": 100,
-    "pv_max": 100,
-    "vitesse": 10,
-    "force": 15,
-    "magie": 6,
-    "armure": 30,
-    "armure_magique": 20,
-    "image": "images/personnages/chevalier.jpg",
-    "attaques": [
-      {
-        "nom": "Morsure",
-        "degats": 50,
-        "type": "physique",
-        "ratioattk": 100,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Griffe",
-        "degats": 3,
-        "type": "physique",
-        "ratioattk": 80,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Boule de Feu",
-        "degats": 30,
-        "type": "magique",
-        "ratioattk": 0,
-        "ratiomagie": 150
-      }
-    ]
-  },
-
-  {
-    "id": "mage",
-    "nom": "Mage du Marais",
-    "pv": 70,
-    "pv_max": 70,
-    "vitesse": 12,
-    "force": 5,
-    "magie": 20,
-    "armure": 10,
-    "armure_magique": 35,
-    "image": "images/personnages/mage.png",
-    "attaques": [
-      {
-        "nom": "Éclair",
-        "degats": 40,
-        "type": "magique",
-        "ratioattk": 0,
-        "ratiomagie": 160
-      }
-    ]
-  }
-]
+{
+  "nom": "CrocoBot",
+  "pv": 100,
+  "pv_max": 100,
+  "vitesse": 10,
+  "force": 15,
+  "magie": 6,
+  "armure": 30,
+  "armure_magique": 20,
+  "image": "images/personnages/chevalier.jpg",
+  "attaques": [
+    {
+      "nom": "Morsure",
+      "degats": 50,
+      "type": "physique",
+      "ratioattk": 100,
+      "ratiomagie": 0
+    },
+    {
+      "nom": "Griffe",
+      "degats": 3,
+      "type": "physique",
+      "ratioattk": 80,
+      "ratiomagie": 0
+    },
+    {
+      "nom": "Boule de Feu",
+      "degats": 30,
+      "type": "magique",
+      "ratioattk": 0,
+      "ratiomagie": 150
+    }
+   
+  ]
+}
