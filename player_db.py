@@ -1,14 +1,16 @@
-# player_db.py
 import os
 import psycopg2
+import psycopg2.extras
 from dotenv import load_dotenv
 
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
-cur = conn.cursor()
+# Curseur qui renvoie des dictionnaires
+cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
+# Création de la table
 cur.execute("""
 CREATE TABLE IF NOT EXISTS player_stats (
     user_id TEXT PRIMARY KEY,
@@ -26,13 +28,14 @@ conn.commit()
 
 
 def get_player(user_id):
-    cur.execute("SELECT * FROM players WHERE user_id = ?", (user_id,))
-    row = cur.fetchone()
+    # 🔹 sélectionner depuis la bonne table
+    cur.execute("SELECT * FROM player_stats WHERE user_id = %s", (user_id,))
+    joueur = cur.fetchone()
 
-    if row:
-        return dict(row)
+    if joueur:
+        return joueur  # déjà un dict grâce à RealDictCursor
 
-    # 🔧 création automatique
+    # 🔧 création automatique si inexistant
     joueur = {
         "user_id": user_id,
         "nom": "Aventurier",
@@ -46,8 +49,8 @@ def get_player(user_id):
     }
 
     cur.execute("""
-        INSERT INTO players (user_id, nom, pv, pv_max, force, magie, armure, armure_magique, vitesse)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO player_stats (user_id, nom, pv, pv_max, force, magie, armure, armure_magique, vitesse)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
     """, tuple(joueur.values()))
     conn.commit()
 
@@ -55,6 +58,8 @@ def get_player(user_id):
 
 
 def update_player(user_id, **stats):
+    if not stats:
+        return
     fields = ", ".join(f"{k} = %s" for k in stats)
     values = list(stats.values()) + [user_id]
     cur.execute(f"""
