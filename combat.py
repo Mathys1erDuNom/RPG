@@ -109,12 +109,7 @@ class CombatView(View):
             attachments=[file]
         )
 
-        # Reset automatique du personnage
-        supprimer_personnage(self.user_id)
-        await interaction.followup.send(
-            f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
-            "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
-        )
+        
             
         # Sauvegarder les PV dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
@@ -176,6 +171,11 @@ class CombatView(View):
                             f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
                     view=None,
                     attachments=[file]
+                )
+                supprimer_personnage(self.user_id)
+                await interaction.followup.send(
+                    f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
+                    "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
                 )
                 return
 
