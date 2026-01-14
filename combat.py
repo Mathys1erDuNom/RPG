@@ -6,8 +6,6 @@ import os
 
 from combat_image import creer_image_combat
 from personnage_db import get_personnage, update_personnage_pv, personnage_existe
-from money_db import add_money
-import random as rand
 
 # ===== CONFIGURATION DES RÉGIONS =====
 REGIONS_DISPONIBLES = [
@@ -133,10 +131,6 @@ class CombatView(View):
 
         # Ennemi KO
         if self.ennemi["pv"] <= 0:
-            # Récompense en argent (entre 50 et 150 pièces)
-            recompense = rand.randint(50, 150)
-            add_money(self.user_id, recompense)
-            
             if self.ennemis_queue:
                 # Passer au prochain ennemi dans la même région
                 self.ennemi = self.ennemis_queue.pop(0)
@@ -144,7 +138,6 @@ class CombatView(View):
                 await self.update_message(
                     interaction,
                     extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🏆 **Vous avez vaincu cet ennemi !**\n"
-                               f"💰 **+{recompense} pièces d'or !**\n"
                                f"👾 **Prochain ennemi : {self.ennemi['nom']} !**"
                 )
                 return
@@ -161,28 +154,18 @@ class CombatView(View):
                 await self.update_message(
                     interaction,
                     extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🏆 **Région terminée !**\n"
-                               f"💰 **+{recompense} pièces d'or !**\n"
                                f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
                                f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
                 )
                 return
             else:
                 # Toutes les régions terminées - sauvegarder les PV finaux
-                # Bonus final
-                bonus_final = rand.randint(200, 500)
-                add_money(self.user_id, recompense + bonus_final)
-                total_recompense = recompense + bonus_final
-                
-                from money_db import get_balance
-                balance = get_balance(self.user_id)
-                
                 update_personnage_pv(self.user_id, self.joueur["pv"])
                 
                 file = discord.File(fp="images/fin/fin.png", filename="fin.png")
                 await interaction.message.edit(
                     content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
-                            f"💰 **+{total_recompense} pièces d'or !** (Total : {balance} pièces)",
+                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
                     view=None,
                     attachments=[file]
                 )
