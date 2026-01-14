@@ -24,7 +24,7 @@ async def on_ready():
         print("❌ Salon introuvable (ID incorrect ou bot n'a pas les permissions)")
 
 @bot.command()
-async def creer_personnage(ctx):
+async def choix_personnage(ctx):
     """Permet de choisir et créer son personnage."""
     user_id = str(ctx.author.id)
     
