@@ -58,9 +58,15 @@ class CombatView(View):
         self.user_id = str(user.id)
         self.joueur = get_player(self.user_id)
         print("DEBUG joueur:", self.joueur)
-        if self.joueur is None:
-            raise ValueError(f"Joueur {self.user_id} introuvable. Le joueur doit être créé avant le combat.")
+
+        if not self.joueur or not self.joueur.get("personnage_id"):
+            raise ValueError(
+                f"❌ Le joueur {self.user_id} n'a pas choisi de personnage."
+            )
+        
         self.joueur["attaques"] = get_attacks(self.user_id)
+        if not self.joueur["attaques"]:
+            raise ValueError("❌ Aucune attaque trouvée pour ce personnage")
         
         # Configuration des régions
         self.nb_ennemis_par_region = nb_ennemis_par_region
@@ -94,7 +100,12 @@ class CombatView(View):
 
     def get_combat_image(self):
         """Génère et retourne l'image du combat."""
+
+        if not self.joueur.get("image"):
+            raise ValueError("❌ Le personnage n'a pas d'image")
+
         image_combat = creer_image_combat(self.joueur, self.ennemi, self.image_fond)
+
         return discord.File(fp=image_combat, filename="combat.png")
 
     def pv_text(self):
@@ -143,6 +154,8 @@ class CombatView(View):
         await interaction.response.defer()
 
         self.joueur["attaques"] = get_attacks(self.user_id)
+        if not self.joueur["attaques"]:
+            raise ValueError("❌ Aucune attaque trouvée pour ce personnage")
 
         attaque = next(a for a in self.joueur["attaques"] if a["nom"] == self.select_attacks.values[0])
         degats = calcul_degats(attaque, self.joueur, self.ennemi)
@@ -175,9 +188,17 @@ class CombatView(View):
                     self.user_id = str(interaction.user.id)
                     self.joueur = get_player(self.user_id)
                     print("DEBUG joueur:", self.joueur)
-                    if self.joueur is None:
-                        raise ValueError(f"Joueur {self.user_id} introuvable. Le joueur doit être créé avant le combat.")
+
+
+                    if not self.joueur or not self.joueur.get("personnage_id"):
+                        raise ValueError(
+                            f"❌ Le joueur {self.user_id} n'a pas choisi de personnage."
+                        )
+                    
+
                     self.joueur["attaques"] = get_attacks(self.user_id)
+                    if not self.joueur["attaques"]:
+                        raise ValueError("❌ Aucune attaque trouvée pour ce personnage")
                     self.refresh_attack_select()
                     
                     # Charger la nouvelle région

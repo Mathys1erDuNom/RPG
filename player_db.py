@@ -13,6 +13,7 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 cur.execute("""
 CREATE TABLE IF NOT EXISTS player_stats (
     user_id TEXT PRIMARY KEY,
+    personnage_id TEXT,
     nom TEXT,
     pv INTEGER,
     pv_max INTEGER,
