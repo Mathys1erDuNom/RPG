@@ -135,31 +135,6 @@ async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
     except ValueError as e:
         await ctx.send(f"❌ Erreur : {str(e)}")
 
-@bot.command()
-async def soigner(ctx):
-    """Restaure les PV du personnage au maximum."""
-    user_id = str(ctx.author.id)
-    
-    if not personnage_existe(user_id):
-        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!creer_personnage` d'abord.")
-        return
-    
-    perso_avant = get_personnage(user_id)
-    reset_personnage_pv(user_id)
-    perso_apres = get_personnage(user_id)
-    
-    pv_restaures = perso_apres['pv'] - perso_avant['pv']
-    
-    if pv_restaures > 0:
-        await ctx.send(
-            f"✨ {ctx.author.mention} **{perso_apres['nom']}** a été soigné !\n"
-            f"❤️ {perso_avant['pv']} → {perso_apres['pv']} PV (+{pv_restaures} PV)"
-        )
-    else:
-        await ctx.send(
-            f"✅ {ctx.author.mention} **{perso_apres['nom']}** est déjà en pleine forme !\n"
-            f"❤️ {perso_apres['pv']}/{perso_apres['pv_max']} PV"
-        )
 
 @bot.command()
 async def reset_personnage(ctx):
@@ -210,11 +185,6 @@ async def aide(ctx):
         inline=False
     )
     
-    embed.add_field(
-        name="!soigner",
-        value="Restaurer tous vos PV au maximum.",
-        inline=False
-    )
     
     embed.add_field(
         name="!reset_personnage",

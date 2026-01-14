@@ -5,7 +5,8 @@ import random
 import os
 
 from combat_image import creer_image_combat
-from personnage_db import get_personnage, update_personnage_pv, personnage_existe
+from personnage_db import get_personnage, update_personnage_pv, personnage_existe, supprimer_personnage
+
 
 # ===== CONFIGURATION DES RÉGIONS =====
 REGIONS_DISPONIBLES = [
@@ -107,7 +108,14 @@ class CombatView(View):
             view=self if self.tour_joueur else None,
             attachments=[file]
         )
-        
+
+        # Reset automatique du personnage
+        supprimer_personnage(self.user_id)
+        await interaction.followup.send(
+            f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
+            "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
+        )
+            
         # Sauvegarder les PV dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
 
@@ -188,6 +196,12 @@ class CombatView(View):
             await self.update_message(
                 interaction,
                 extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n💀 **Vous avez été vaincu...**"
+            )
+            # Reset automatique du personnage
+            supprimer_personnage(self.user_id)
+            await interaction.followup.send(
+                f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
+                "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
             )
             return
         else:
