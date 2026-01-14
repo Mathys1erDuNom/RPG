@@ -26,13 +26,13 @@ async def on_ready():
 
 @bot.command()
 async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
-    """Lance un combat avec des régions et des ennemis."""
-    view = CombatView(nb_regions=nb_regions, nb_ennemis_par_region=nb_ennemis)
-    
-    # Générer l'image initiale du combat
+    view = CombatView(
+        user=ctx.author,
+        nb_regions=nb_regions,
+        nb_ennemis_par_region=nb_ennemis
+    )
+
     file = view.get_combat_image()
-    
-    # Envoyer le message avec l'image et le contenu
     await ctx.send(
         content=view.get_initial_message_content(),
         file=file,

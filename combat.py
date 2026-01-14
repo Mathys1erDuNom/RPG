@@ -52,11 +52,10 @@ def calcul_degats(attaque, attaquant, defenseur):
     return max(1, int(degats))
 
 class CombatView(View):
-    def __init__(self, interaction: discord.Interaction, nb_regions=3, nb_ennemis_par_region=10):
+    def __init__(self, user: discord.abc.User, nb_regions=3, nb_ennemis_par_region=10):
         super().__init__(timeout=None)
 
-        # Charger joueur
-        self.user_id = str(interaction.user.id)
+        self.user_id = str(user.id)
         self.joueur = get_player(self.user_id)
         self.joueur["attaques"] = get_attacks(self.user_id)
         
