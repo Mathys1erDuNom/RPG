@@ -5,6 +5,7 @@ import random
 import os
 
 from combat_image import creer_image_combat
+from personnage_db import get_personnage, update_personnage_pv, personnage_existe
 
 # ===== CONFIGURATION DES RÉGIONS =====
 REGIONS_DISPONIBLES = [
@@ -17,39 +18,36 @@ def load_json(file):
     with open(file, "r", encoding="utf-8") as f:
         return json.load(f)
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-personnage = load_json(os.path.join(script_dir, "json/personnage.json"))
-
 def calcul_degats(attaque, attaquant, defenseur):
     """Calcule les dégâts d'une attaque en prenant en compte les ratios force/magie et les armures."""
-    # Dégâts de base
     degats = attaque["degats"]
     
-    # Ajouter les bonus selon les ratios
     ratio_attk = attaque.get("ratioattk", 0) / 100
     ratio_magie = attaque.get("ratiomagie", 0) / 100
     
     degats += attaquant.get("force", 0) * ratio_attk
     degats += attaquant.get("magie", 0) * ratio_magie
     
-    # Appliquer la réduction d'armure selon le type d'attaque
     if attaque["type"] == "magique":
         degats *= (1 - defenseur.get("armure_magique", 0) / 100)
     elif attaque["type"] == "physique":
         degats *= (1 - defenseur.get("armure", 0) / 100)
     elif attaque["type"] == "hybride":
-        # Pour les attaques hybrides, moyenne des deux armures
         reduction = (defenseur.get("armure", 0) + defenseur.get("armure_magique", 0)) / 2
         degats *= (1 - reduction / 100)
     
     return max(1, int(degats))
 
 class CombatView(View):
-    def __init__(self, nb_regions=3, nb_ennemis_par_region=10):
+    def __init__(self, user_id, nb_regions=3, nb_ennemis_par_region=10):
         super().__init__(timeout=None)
 
-        # Charger joueur
-        self.joueur = load_json("json/personnage.json")
+        self.user_id = user_id
+        
+        # Charger le personnage depuis la base de données
+        self.joueur = get_personnage(user_id)
+        if not self.joueur:
+            raise ValueError("Personnage introuvable dans la base de données")
         
         # Configuration des régions
         self.nb_ennemis_par_region = nb_ennemis_par_region
@@ -62,7 +60,7 @@ class CombatView(View):
         # Charger les ennemis de la région actuelle
         region_enemies = load_json(f"json/ennemies/{self.region}.json")
         self.ennemis_queue = random.sample(region_enemies, k=min(nb_ennemis_par_region, len(region_enemies)))
-        self.ennemi = self.ennemis_queue.pop(0)  # premier ennemi
+        self.ennemi = self.ennemis_queue.pop(0)
 
         # Qui attaque en premier
         self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
@@ -109,8 +107,19 @@ class CombatView(View):
             view=self if self.tour_joueur else None,
             attachments=[file]
         )
+        
+        # Sauvegarder les PV dans la base de données
+        update_personnage_pv(self.user_id, self.joueur["pv"])
 
     async def joueur_attaque(self, interaction: discord.Interaction):
+        # Vérifier que c'est bien le joueur qui a lancé le combat
+        if str(interaction.user.id) != self.user_id:
+            await interaction.response.send_message(
+                "❌ Ce n'est pas votre combat !",
+                ephemeral=True
+            )
+            return
+            
         if not self.tour_joueur:
             await interaction.response.defer()
             return
@@ -137,7 +146,6 @@ class CombatView(View):
                 self.region = self.regions_queue.pop(0)
                 self.image_fond = f"images/fond/{self.region}.png"
                 
-                # Charger les ennemis de la nouvelle région
                 region_enemies = load_json(f"json/ennemies/{self.region}.json")
                 self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
                 self.ennemi = self.ennemis_queue.pop(0)
@@ -151,10 +159,13 @@ class CombatView(View):
                 )
                 return
             else:
-                # Toutes les régions terminées
+                # Toutes les régions terminées - sauvegarder les PV finaux
+                update_personnage_pv(self.user_id, self.joueur["pv"])
+                
                 file = discord.File(fp="images/fin/fin.png", filename="fin.png")
                 await interaction.message.edit(
-                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**",
+                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
                     view=None,
                     attachments=[file]
                 )
@@ -171,7 +182,9 @@ class CombatView(View):
         self.joueur["pv"] -= degats
 
         if self.joueur["pv"] <= 0:
-            # Joueur KO
+            # Joueur KO - sauvegarder les PV à 0
+            update_personnage_pv(self.user_id, 0)
+            
             await self.update_message(
                 interaction,
                 extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n💀 **Vous avez été vaincu...**"
@@ -184,3 +197,43 @@ class CombatView(View):
                 interaction,
                 extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
             )
+
+
+async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_ennemis_par_region=10):
+    """Démarre un combat pour l'utilisateur."""
+    user_id = str(interaction.user.id)
+    
+    # Vérifier que l'utilisateur a un personnage
+    if not personnage_existe(user_id):
+        await interaction.response.send_message(
+            "❌ Vous n'avez pas de personnage ! Utilisez `/creer_personnage` d'abord.",
+            ephemeral=True
+        )
+        return
+    
+    # Charger le personnage
+    joueur = get_personnage(user_id)
+    
+    # Vérifier que le joueur a des PV
+    if joueur["pv"] <= 0:
+        await interaction.response.send_message(
+            "❌ Votre personnage est KO ! Utilisez `/soigner` pour restaurer vos PV.",
+            ephemeral=True
+        )
+        return
+    
+    # Créer la vue de combat
+    try:
+        view = CombatView(user_id, nb_regions, nb_ennemis_par_region)
+        file = view.get_combat_image()
+        
+        await interaction.response.send_message(
+            content=view.get_initial_message_content(),
+            view=view,
+            file=file
+        )
+    except ValueError as e:
+        await interaction.response.send_message(
+            f"❌ Erreur : {str(e)}",
+            ephemeral=True
+        )

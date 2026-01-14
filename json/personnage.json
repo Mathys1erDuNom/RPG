@@ -1,35 +1,72 @@
-{
-  "nom": "CrocoBot",
-  "pv": 100,
-  "pv_max": 100,
-  "vitesse": 10,
-  "force": 15,
-  "magie": 6,
-  "armure": 30,
-  "armure_magique": 20,
-  "image": "images/personnages/chevalier.jpg",
-  "attaques": [
-    {
-      "nom": "Morsure",
-      "degats": 50,
-      "type": "physique",
-      "ratioattk": 100,
-      "ratiomagie": 0
-    },
-    {
-      "nom": "Griffe",
-      "degats": 3,
-      "type": "physique",
-      "ratioattk": 80,
-      "ratiomagie": 0
-    },
-    {
-      "nom": "Boule de Feu",
-      "degats": 30,
-      "type": "magique",
-      "ratioattk": 0,
-      "ratiomagie": 150
-    }
-   
-  ]
-}
+[
+  {
+    "race": "Humain",
+    "nom": "CrocoBot",
+    "pv": 100,
+    "pv_max": 100,
+    "vitesse": 10,
+    "force": 15,
+    "magie": 6,
+    "armure": 30,
+    "armure_magique": 20,
+    "image": "images/personnages/chevalier.jpg",
+    "attaques": [
+      {
+        "nom": "Morsure",
+        "degats": 50,
+        "type": "physique",
+        "ratioattk": 100,
+        "ratiomagie": 0
+      },
+      {
+        "nom": "Griffe",
+        "degats": 3,
+        "type": "physique",
+        "ratioattk": 80,
+        "ratiomagie": 0
+      },
+      {
+        "nom": "Boule de Feu",
+        "degats": 30,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 150
+      }
+    ]
+  },
+  {
+    "race": "Elfe",
+    "nom": "Sylvaine",
+    "pv": 80,
+    "pv_max": 80,
+    "vitesse": 18,
+    "force": 8,
+    "magie": 20,
+    "armure": 15,
+    "armure_magique": 35,
+    "image": "images/personnages/elfe.jpg",
+    "attaques": [
+      {
+        "nom": "Flèche Enchantée",
+        "degats": 20,
+        "type": "hybride",
+        "ratioattk": 50,
+        "ratiomagie": 80
+      },
+      {
+        "nom": "Tempête de Glace",
+        "degats": 40,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 160
+      },
+      {
+        "nom": "Tir Rapide",
+        "degats": 15,
+        "type": "physique",
+        "ratioattk": 120,
+        "ratiomagie": 0
+      }
+    ]
+  }
+]
