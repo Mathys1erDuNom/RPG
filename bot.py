@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from combat import CombatView
 from selection_personnage import SelectionPersonnageView
 from personnage_db import personnage_existe, get_personnage, reset_personnage_pv
+from shop import ouvrir_shop
+from money_db import get_balance
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -22,6 +24,32 @@ async def on_ready():
         await channel.send("🟢 **Le bot est connecté et prêt !** 🐊")
     else:
         print("❌ Salon introuvable (ID incorrect ou bot n'a pas les permissions)")
+
+@bot.command()
+async def shop(ctx):
+    """Ouvre la boutique pour acheter des attaques et améliorations."""
+    await ouvrir_shop(ctx)
+
+@bot.command()
+async def argent(ctx):
+    """Affiche votre solde actuel."""
+    user_id = str(ctx.author.id)
+    
+    if not personnage_existe(user_id):
+        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!creer_personnage` d'abord.")
+        return
+    
+    balance = get_balance(user_id)
+    perso = get_personnage(user_id)
+    
+    embed = discord.Embed(
+        title=f"💰 Argent de {perso['nom']}",
+        description=f"Vous possédez **{balance}** pièces d'or !",
+        color=discord.Color.gold()
+    )
+    embed.set_footer(text="Utilisez !shop pour dépenser vos pièces")
+    
+    await ctx.send(embed=embed)
 
 @bot.command()
 async def creer_personnage(ctx):
@@ -211,6 +239,18 @@ async def aide(ctx):
     )
     
     embed.add_field(
+        name="!shop",
+        value="Ouvrir la boutique pour acheter des attaques et améliorations.",
+        inline=False
+    )
+    
+    embed.add_field(
+        name="!argent",
+        value="Afficher votre solde actuel.",
+        inline=False
+    )
+    
+    embed.add_field(
         name="!soigner",
         value="Restaurer tous vos PV au maximum.",
         inline=False
@@ -228,7 +268,7 @@ async def aide(ctx):
         inline=False
     )
     
-    embed.set_footer(text="💡 Astuce : Les PV sont sauvegardés automatiquement après chaque combat !")
+    embed.set_footer(text="💡 Astuce : Gagnez de l'argent en combattant et dépensez-le au shop !")
     
     await ctx.send(embed=embed)
 

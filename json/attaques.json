@@ -1,0 +1,206 @@
+{
+    "attaques": [
+      {
+        "id": "atk_001",
+        "nom": "Lame Tourbillonnante",
+        "degats": 45,
+        "type": "physique",
+        "ratioattk": 140,
+        "ratiomagie": 0,
+        "prix": 500,
+        "description": "Une attaque physique puissante qui fait tournoyer la lame"
+      },
+      {
+        "id": "atk_002",
+        "nom": "Nova Arcanique",
+        "degats": 55,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 190,
+        "prix": 600,
+        "description": "Libère une explosion magique dévastatrice"
+      },
+      {
+        "id": "atk_003",
+        "nom": "Frappe du Chaos",
+        "degats": 40,
+        "type": "hybride",
+        "ratioattk": 100,
+        "ratiomagie": 120,
+        "prix": 700,
+        "description": "Combine la force brute et la magie pour une attaque dévastatrice"
+      },
+      {
+        "id": "atk_004",
+        "nom": "Pluie de Flèches",
+        "degats": 35,
+        "type": "physique",
+        "ratioattk": 160,
+        "ratiomagie": 0,
+        "prix": 450,
+        "description": "Tire une volée de flèches sur l'ennemi"
+      },
+      {
+        "id": "atk_005",
+        "nom": "Tornade de Feu",
+        "degats": 50,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 200,
+        "prix": 800,
+        "description": "Invoque une tornade enflammée destructrice"
+      },
+      {
+        "id": "atk_006",
+        "nom": "Coup du Dragon",
+        "degats": 60,
+        "type": "physique",
+        "ratioattk": 170,
+        "ratiomagie": 0,
+        "prix": 900,
+        "description": "Un coup dévastateur inspiré de la puissance des dragons"
+      },
+      {
+        "id": "atk_007",
+        "nom": "Rayon de Lune",
+        "degats": 38,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 175,
+        "prix": 550,
+        "description": "Invoque la puissance de la lune pour frapper l'ennemi"
+      },
+      {
+        "id": "atk_008",
+        "nom": "Danse des Lames",
+        "degats": 42,
+        "type": "hybride",
+        "ratioattk": 110,
+        "ratiomagie": 90,
+        "prix": 650,
+        "description": "Une série de frappes rapides enchantées"
+      },
+      {
+        "id": "atk_009",
+        "nom": "Souffle Glacial",
+        "degats": 48,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 185,
+        "prix": 700,
+        "description": "Gèle l'ennemi avec un souffle de glace pure"
+      },
+      {
+        "id": "atk_010",
+        "nom": "Uppercut Destructeur",
+        "degats": 52,
+        "type": "physique",
+        "ratioattk": 155,
+        "ratiomagie": 0,
+        "prix": 750,
+        "description": "Un uppercut dévastateur qui projette l'ennemi"
+      }
+    ],
+    "objets_stats": [
+      {
+        "id": "obj_001",
+        "nom": "Potion de Force",
+        "type": "stat_boost",
+        "stat": "force",
+        "bonus": 5,
+        "prix": 300,
+        "description": "Augmente la Force de +5",
+        "emoji": "💪"
+      },
+      {
+        "id": "obj_002",
+        "nom": "Potion de Magie",
+        "type": "stat_boost",
+        "stat": "magie",
+        "bonus": 5,
+        "prix": 300,
+        "description": "Augmente la Magie de +5",
+        "emoji": "🔮"
+      },
+      {
+        "id": "obj_003",
+        "nom": "Potion de Vitesse",
+        "type": "stat_boost",
+        "stat": "vitesse",
+        "bonus": 3,
+        "prix": 250,
+        "description": "Augmente la Vitesse de +3",
+        "emoji": "⚡"
+      },
+      {
+        "id": "obj_004",
+        "nom": "Armure Renforcée",
+        "type": "stat_boost",
+        "stat": "armure",
+        "bonus": 10,
+        "prix": 400,
+        "description": "Augmente l'Armure de +10",
+        "emoji": "🛡️"
+      },
+      {
+        "id": "obj_005",
+        "nom": "Cape Mystique",
+        "type": "stat_boost",
+        "stat": "armure_magique",
+        "bonus": 10,
+        "prix": 400,
+        "description": "Augmente l'Armure Magique de +10",
+        "emoji": "✨"
+      },
+      {
+        "id": "obj_006",
+        "nom": "Élixir de Vie",
+        "type": "stat_boost",
+        "stat": "pv_max",
+        "bonus": 20,
+        "prix": 500,
+        "description": "Augmente les PV Max de +20",
+        "emoji": "❤️"
+      },
+      {
+        "id": "obj_007",
+        "nom": "Élixir de Force Majeure",
+        "type": "stat_boost",
+        "stat": "force",
+        "bonus": 10,
+        "prix": 600,
+        "description": "Augmente la Force de +10",
+        "emoji": "💪"
+      },
+      {
+        "id": "obj_008",
+        "nom": "Grimoire Ancien",
+        "type": "stat_boost",
+        "stat": "magie",
+        "bonus": 10,
+        "prix": 600,
+        "description": "Augmente la Magie de +10",
+        "emoji": "📖"
+      },
+      {
+        "id": "obj_009",
+        "nom": "Bottes Ailées",
+        "type": "stat_boost",
+        "stat": "vitesse",
+        "bonus": 7,
+        "prix": 550,
+        "description": "Augmente la Vitesse de +7",
+        "emoji": "👢"
+      },
+      {
+        "id": "obj_010",
+        "nom": "Bouclier du Titan",
+        "type": "stat_boost",
+        "stat": "armure",
+        "bonus": 15,
+        "prix": 700,
+        "description": "Augmente l'Armure de +15",
+        "emoji": "🛡️"
+      }
+    ]
+  }
