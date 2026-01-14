@@ -3,8 +3,11 @@ from discord.ui import View, Select
 import json
 import random
 import os
-
+from player_db import update_player
 from combat_image import creer_image_combat
+from player_db import get_player
+from attacks_db import get_attacks
+from money_db import add_balance
 
 # ===== CONFIGURATION DES RÉGIONS =====
 REGIONS_DISPONIBLES = [
@@ -22,7 +25,7 @@ def save_json(file, data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-personnage = load_json(os.path.join(script_dir, "json/personnage.json"))
+
 
 def calcul_degats(attaque, attaquant, defenseur):
     """Calcule les dégâts d'une attaque en prenant en compte les ratios force/magie et les armures."""
@@ -49,11 +52,13 @@ def calcul_degats(attaque, attaquant, defenseur):
     return max(1, int(degats))
 
 class CombatView(View):
-    def __init__(self, nb_regions=3, nb_ennemis_par_region=10):
+    def __init__(self, interaction: discord.Interaction, nb_regions=3, nb_ennemis_par_region=10):
         super().__init__(timeout=None)
 
         # Charger joueur
-        self.joueur = load_json("json/personnage.json")
+        self.user_id = str(interaction.user.id)
+        self.joueur = get_player(self.user_id)
+        self.joueur["attaques"] = get_attacks(self.user_id)
         
         # Configuration des régions
         self.nb_ennemis_par_region = nb_ennemis_par_region
@@ -119,11 +124,23 @@ class CombatView(View):
             attachments=[file]
         )
 
+    def refresh_attack_select(self):
+        self.select_attacks.options = [
+            discord.SelectOption(
+                label=a["nom"],
+                description=f"Dégâts : {a['degats']}"
+            )
+            for a in self.joueur["attaques"]
+        ]
+    
+
     async def joueur_attaque(self, interaction: discord.Interaction):
         if not self.tour_joueur:
             await interaction.response.defer()
             return
         await interaction.response.defer()
+
+        self.joueur["attaques"] = get_attacks(self.user_id)
 
         attaque = next(a for a in self.joueur["attaques"] if a["nom"] == self.select_attacks.values[0])
         degats = calcul_degats(attaque, self.joueur, self.ennemi)
@@ -146,12 +163,17 @@ class CombatView(View):
                 from shop import ShopView
                 
                 # Sauvegarder l'état du joueur
-                save_json("json/personnage.json", self.joueur)
+                
                 
                 # Callback pour reprendre le combat après le shop
                 async def reprendre_combat(shop_interaction):
+
+
                     # Recharger le joueur mis à jour
-                    self.joueur = load_json("json/personnage.json")
+                    self.user_id = str(interaction.user.id)
+                    self.joueur = get_player(self.user_id)
+                    self.joueur["attaques"] = get_attacks(self.user_id)
+                    self.refresh_attack_select()
                     
                     # Charger la nouvelle région
                     self.region = self.regions_queue.pop(0)
@@ -174,7 +196,8 @@ class CombatView(View):
                         extra_text=f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
                                    f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
                     )
-                
+
+                update_player(self.user_id, pv=self.joueur["pv"])
                 # Ouvrir le shop
                 shop_view = ShopView(self.joueur, reprendre_combat)
                 file = discord.File(fp="images/shop.png", filename="shop.png")
@@ -185,8 +208,8 @@ class CombatView(View):
                 )
                 
                 # Donner de l'or au joueur
-                self.joueur["gold"] = self.joueur.get("gold", 0) + 500
-                save_json("json/personnage.json", self.joueur)
+                add_balance(self.user_id, 500)
+               
                 return
             else:
                 # Toutes les régions terminées
@@ -197,7 +220,7 @@ class CombatView(View):
                     attachments=[file]
                 )
                 return
-
+        update_player(self.user_id, pv=self.joueur["pv"])
         # Passage au tour de l'ennemi
         self.tour_joueur = False
         await self.update_message(interaction, extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**")
@@ -207,6 +230,7 @@ class CombatView(View):
         attaque = random.choice(self.ennemi["attaques"])
         degats = calcul_degats(attaque, self.ennemi, self.joueur)
         self.joueur["pv"] -= degats
+        update_player(self.user_id, pv=self.joueur["pv"])
 
         if self.joueur["pv"] <= 0:
             # Joueur KO
