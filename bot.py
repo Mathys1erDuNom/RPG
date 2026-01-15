@@ -51,7 +51,7 @@ async def mon_personnage(ctx):
     user_id = str(ctx.author.id)
     
     if not personnage_existe(user_id):
-        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!creer_personnage` d'abord.")
+        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!choix_personnage` d'abord.")
         return
     
     perso = get_personnage(user_id)
@@ -165,8 +165,8 @@ async def aide(ctx):
     )
     
     embed.add_field(
-        name="!creer_personnage",
-        value="Créer votre personnage en choisissant parmi les personnages disponibles.",
+        name="!choix_personnage",
+        value="Choisissez votre personnage en choisissant parmi les personnages disponibles.",
         inline=False
     )
     
@@ -188,7 +188,7 @@ async def aide(ctx):
     
     embed.add_field(
         name="!reset_personnage",
-        value="Supprimer votre personnage actuel pour en créer un nouveau.",
+        value="Supprimer votre personnage actuel pour en selectionner un nouveau.",
         inline=False
     )
     
