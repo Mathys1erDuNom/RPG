@@ -46,7 +46,7 @@
     "magie": 20,
     "armure": 15,
     "armure_magique": 35,
-    "image": "images/personnages/elfe.jpg",
+    "image": "images/region/ennemies/gobelin.png",
     "attaques": [
       {
         "nom": "Flèche Enchantée",
