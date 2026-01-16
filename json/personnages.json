@@ -2,6 +2,7 @@
   {
     "race": "Humain",
     "nom": "CrocoBot",
+    "description" : "Guerrier de Breham",
     "pv": 100,
     "pv_max": 100,
     "vitesse": 10,
@@ -37,6 +38,7 @@
   {
     "race": "Elfe",
     "nom": "Sylvaine",
+    "description" : "Elfe de Breham",
     "pv": 80,
     "pv_max": 80,
     "vitesse": 18,

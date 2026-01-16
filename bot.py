@@ -63,6 +63,21 @@ async def mon_personnage(ctx):
         color=discord.Color.blue()
     )
     
+    # Attacher l'image du personnage en haut de l'embed
+    image_path = perso.get('image', '')
+    file = None
+    if image_path and os.path.exists(image_path):
+        file = discord.File(image_path, filename="personnage.png")
+        embed.set_thumbnail(url="attachment://personnage.png")
+    
+    # Ajouter la description si elle existe
+    if perso.get('description'):
+        embed.add_field(
+            name="📖 Description",
+            value=perso['description'],
+            inline=False
+        )
+    
     # Calculer le pourcentage de PV
     pv_percent = (perso['pv'] / perso['pv_max']) * 100
     if pv_percent > 75:
@@ -82,7 +97,7 @@ async def mon_personnage(ctx):
               f"🛡️ **Armure:** {perso['armure']}\n"
               f"✨ **Armure Magique:** {perso['armure_magique']}\n"
               f"⚡ **Vitesse:** {perso['vitesse']}",
-        inline=True
+        inline=False
     )
     
     # Liste des attaques
@@ -98,18 +113,13 @@ async def mon_personnage(ctx):
         inline=False
     )
     
-    # Attacher l'image du personnage à l'embed
-    image_path = perso.get('image', '')
-    if image_path and os.path.exists(image_path):
-        file = discord.File(image_path, filename="personnage.png")
-        embed.set_image(url="attachment://personnage.png")
+    # Envoyer l'embed avec ou sans image
+    if file:
         await ctx.send(embed=embed, file=file)
     else:
-        # Si pas d'image trouvée, envoyer juste l'embed
         await ctx.send(embed=embed)
 
 
-        
 @bot.command()
 async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
     """Lance un combat avec des régions et des ennemis."""

@@ -12,12 +12,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 conn = psycopg2.connect(DATABASE_URL, sslmode="require")
 cur = conn.cursor()
 
-# Création de la table personnages
+# Création de la table personnages avec description
 cur.execute("""
 CREATE TABLE IF NOT EXISTS personnages (
     user_id TEXT PRIMARY KEY,
     race TEXT NOT NULL,
     nom TEXT NOT NULL,
+    description TEXT,
     pv INTEGER NOT NULL,
     pv_max INTEGER NOT NULL,
     vitesse INTEGER NOT NULL,
@@ -33,6 +34,17 @@ CREATE TABLE IF NOT EXISTS personnages (
 """)
 conn.commit()
 
+# Ajouter la colonne description si elle n'existe pas déjà
+try:
+    cur.execute("""
+        ALTER TABLE personnages 
+        ADD COLUMN IF NOT EXISTS description TEXT;
+    """)
+    conn.commit()
+except Exception as e:
+    print(f"Info: {e}")
+    conn.rollback()
+
 
 def charger_personnages_base():
     """Charge tous les personnages disponibles depuis le fichier JSON."""
@@ -43,7 +55,7 @@ def charger_personnages_base():
 def get_personnage(user_id):
     """Récupère le personnage d'un utilisateur depuis la base de données."""
     cur.execute("""
-        SELECT race, nom, pv, pv_max, vitesse, force, magie, armure, armure_magique, image, attaques
+        SELECT race, nom, description, pv, pv_max, vitesse, force, magie, armure, armure_magique, image, attaques
         FROM personnages
         WHERE user_id = %s
     """, (user_id,))
@@ -53,15 +65,16 @@ def get_personnage(user_id):
         return {
             "race": result[0],
             "nom": result[1],
-            "pv": result[2],
-            "pv_max": result[3],
-            "vitesse": result[4],
-            "force": result[5],
-            "magie": result[6],
-            "armure": result[7],
-            "armure_magique": result[8],
-            "image": result[9],
-            "attaques": result[10]
+            "description": result[2] or "",
+            "pv": result[3],
+            "pv_max": result[4],
+            "vitesse": result[5],
+            "force": result[6],
+            "magie": result[7],
+            "armure": result[8],
+            "armure_magique": result[9],
+            "image": result[10],
+            "attaques": result[11]
         }
     return None
 
@@ -70,15 +83,16 @@ def creer_personnage(user_id, personnage_base):
     """Crée un nouveau personnage pour un utilisateur à partir d'un personnage de base."""
     cur.execute("""
         INSERT INTO personnages (
-            user_id, race, nom, pv, pv_max, vitesse, force, magie, 
+            user_id, race, nom, description, pv, pv_max, vitesse, force, magie, 
             armure, armure_magique, image, attaques
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (user_id) DO NOTHING
     """, (
         user_id,
         personnage_base["race"],
         personnage_base["nom"],
+        personnage_base.get("description", ""),
         personnage_base["pv"],
         personnage_base["pv_max"],
         personnage_base["vitesse"],
@@ -127,7 +141,7 @@ def personnage_existe(user_id):
 def get_stats_personnage(user_id):
     """Récupère uniquement les statistiques du personnage (sans les attaques)."""
     cur.execute("""
-        SELECT race, nom, pv, pv_max, vitesse, force, magie, armure, armure_magique
+        SELECT race, nom, description, pv, pv_max, vitesse, force, magie, armure, armure_magique
         FROM personnages
         WHERE user_id = %s
     """, (user_id,))
@@ -137,12 +151,13 @@ def get_stats_personnage(user_id):
         return {
             "race": result[0],
             "nom": result[1],
-            "pv": result[2],
-            "pv_max": result[3],
-            "vitesse": result[4],
-            "force": result[5],
-            "magie": result[6],
-            "armure": result[7],
-            "armure_magique": result[8]
+            "description": result[2] or "",
+            "pv": result[3],
+            "pv_max": result[4],
+            "vitesse": result[5],
+            "force": result[6],
+            "magie": result[7],
+            "armure": result[8],
+            "armure_magique": result[9]
         }
     return None
