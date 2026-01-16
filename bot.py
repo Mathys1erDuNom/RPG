@@ -98,8 +98,18 @@ async def mon_personnage(ctx):
         inline=False
     )
     
-    await ctx.send(embed=embed)
+    # Attacher l'image du personnage à l'embed
+    image_path = perso.get('image', '')
+    if image_path and os.path.exists(image_path):
+        file = discord.File(image_path, filename="personnage.png")
+        embed.set_image(url="attachment://personnage.png")
+        await ctx.send(embed=embed, file=file)
+    else:
+        # Si pas d'image trouvée, envoyer juste l'embed
+        await ctx.send(embed=embed)
 
+
+        
 @bot.command()
 async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
     """Lance un combat avec des régions et des ennemis."""
