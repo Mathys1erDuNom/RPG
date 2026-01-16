@@ -39,11 +39,14 @@ async def choix_personnage(ctx):
     
     # Afficher le menu de sélection
     view = SelectionPersonnageView(user_id)
-    await ctx.send(
-        f"🎮 **{ctx.author.mention} Choisissez votre personnage**\n"
-        "Sélectionnez le personnage avec lequel vous voulez jouer :",
-        view=view
-    )
+    embed, file = view.get_current_embed_and_file()
+    
+    content = f"🎮 **{ctx.author.mention} Choisissez votre personnage**\nUtilisez les boutons pour naviguer entre les personnages :"
+    
+    if file:
+        await ctx.send(content=content, embed=embed, file=file, view=view)
+    else:
+        await ctx.send(content=content, embed=embed, view=view)
 
 @bot.command()
 async def mon_personnage(ctx):
