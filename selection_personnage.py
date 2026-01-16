@@ -49,12 +49,14 @@ class SelectionPersonnageView(View):
             color=discord.Color.blue()
         )
         
-        # Attacher l'image du personnage
+        # Attacher l'image du personnage avec un nom unique pour éviter le cache
         image_path = perso.get('image', '')
         file = None
         if image_path and os.path.exists(image_path):
-            file = discord.File(image_path, filename="personnage.png")
-            embed.set_thumbnail(url="attachment://personnage.png")
+            # Utiliser un nom de fichier unique basé sur l'index
+            filename = f"personnage_{self.selected_index}.png"
+            file = discord.File(image_path, filename=filename)
+            embed.set_thumbnail(url=f"attachment://{filename}")
         
         # Ajouter la description si elle existe
         if perso.get('description'):
@@ -158,12 +160,13 @@ class SelectionPersonnageView(View):
             color=discord.Color.green()
         )
         
-        # Attacher l'image du personnage
+        # Attacher l'image du personnage avec un nom unique
         image_path = perso.get('image', '')
         file = None
         if image_path and os.path.exists(image_path):
-            file = discord.File(image_path, filename="personnage.png")
-            embed.set_thumbnail(url="attachment://personnage.png")
+            filename = f"personnage_selected_{self.selected_index}.png"
+            file = discord.File(image_path, filename=filename)
+            embed.set_thumbnail(url=f"attachment://{filename}")
         
         if file:
             await interaction.response.edit_message(embed=embed, attachments=[file], view=self)
