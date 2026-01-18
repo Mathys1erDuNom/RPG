@@ -145,9 +145,6 @@ class CombatView(View):
         """Continue vers la prochaine région après le shop."""
         if not self.regions_queue:
             # Plus de régions - victoire finale
-            update_personnage_pv(self.user_id, self.joueur["pv"])
-            update_personnage_stats(self.user_id, self.joueur)
-            
             # Essayer de charger l'image de fin
             fin_image_path = "images/fin/fin.png"
             if os.path.exists(fin_image_path):
@@ -174,11 +171,12 @@ class CombatView(View):
                             f"⚡ Vitesse finale : {self.joueur['vitesse']}"
                 )
             
+            # Supprimer complètement le personnage
             supprimer_personnage(self.user_id)
             user = await interaction.client.fetch_user(int(self.user_id))
             await channel.send(
-                f"🗑️ {user.mention} Votre personnage a été supprimé après le combat. "
-                "Vous pouvez en créer un nouveau avec `/creer_personnage` !"
+                f"🎮 {user.mention} Votre aventure est terminée ! Votre personnage a été supprimé.\n"
+                "Vous pouvez créer un nouveau personnage avec `/creer_personnage` pour recommencer !"
             )
             return
         
@@ -271,14 +269,15 @@ class CombatView(View):
         self.joueur["pv"] -= degats
 
         if self.joueur["pv"] <= 0:
-            # Joueur KO - sauvegarder les PV à 0
-            update_personnage_pv(self.user_id, 0)
-            
+            # Joueur KO - afficher le message de défaite
             await self.update_message(
                 interaction,
-                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n💀 **Vous avez été vaincu...**"
+                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
+                           f"💀 **Vous avez été vaincu...**\n"
+                           f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
             )
-            # Reset automatique du personnage
+            
+            # Supprimer complètement le personnage (attaques et stats comprises)
             supprimer_personnage(self.user_id)
             
             return
