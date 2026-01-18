@@ -46,7 +46,7 @@
     "magie": 20,
     "armure": 15,
     "armure_magique": 35,
-    "image": "images/region/ennemies/gobelin.png",
+    "image": "images/region/desert/ennemies/gobelin.png",
     "attaques": [
       {
         "nom": "Flèche Enchantée",
