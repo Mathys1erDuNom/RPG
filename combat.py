@@ -199,10 +199,7 @@ class CombatView(View):
             )
             # Reset automatique du personnage
             supprimer_personnage(self.user_id)
-            await interaction.followup.send(
-                f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
-                "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
-            )
+            
             return
         else:
             # Retour au joueur

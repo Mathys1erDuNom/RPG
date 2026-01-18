@@ -130,7 +130,7 @@ async def combat(ctx, nb_regions: int = 3, nb_ennemis: int = 10):
     
     # Vérifier que l'utilisateur a un personnage
     if not personnage_existe(user_id):
-        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!creer_personnage` d'abord.")
+        await ctx.send(f"❌ {ctx.author.mention} Vous n'avez pas de personnage ! Utilisez `!choix_personnage` d'abord.")
         return
     
     # Charger le personnage
