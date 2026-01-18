@@ -173,11 +173,7 @@ class CombatView(View):
             
             # Supprimer complètement le personnage
             supprimer_personnage(self.user_id)
-            user = await interaction.client.fetch_user(int(self.user_id))
-            await channel.send(
-                f"🎮 {user.mention} Votre aventure est terminée ! Votre personnage a été supprimé.\n"
-                "Vous pouvez créer un nouveau personnage avec `/creer_personnage` pour recommencer !"
-            )
+            
             return
         
         # Passer à la région suivante
