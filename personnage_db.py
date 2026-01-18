@@ -116,6 +116,42 @@ def update_personnage_pv(user_id, pv):
     conn.commit()
 
 
+def update_personnage_stats(user_id, personnage):
+    """Met à jour toutes les statistiques du personnage."""
+    cur.execute("""
+        UPDATE personnages
+        SET pv = %s,
+            pv_max = %s,
+            vitesse = %s,
+            force = %s,
+            magie = %s,
+            armure = %s,
+            armure_magique = %s,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = %s
+    """, (
+        personnage['pv'],
+        personnage['pv_max'],
+        personnage['vitesse'],
+        personnage['force'],
+        personnage['magie'],
+        personnage['armure'],
+        personnage['armure_magique'],
+        user_id
+    ))
+    conn.commit()
+
+
+def update_personnage_attaques(user_id, attaques):
+    """Met à jour les attaques du personnage."""
+    cur.execute("""
+        UPDATE personnages
+        SET attaques = %s, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = %s
+    """, (Json(attaques), user_id))
+    conn.commit()
+
+
 def reset_personnage_pv(user_id):
     """Restaure les PV du personnage à leur maximum."""
     cur.execute("""

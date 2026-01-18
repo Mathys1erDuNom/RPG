@@ -5,7 +5,15 @@ import random
 import os
 
 from combat_image import creer_image_combat
-from personnage_db import get_personnage, update_personnage_pv, personnage_existe, supprimer_personnage
+from personnage_db import (
+    get_personnage, 
+    update_personnage_pv, 
+    personnage_existe, 
+    supprimer_personnage,
+    update_personnage_stats,
+    update_personnage_attaques
+)
+from shop import afficher_shop
 
 
 # ===== CONFIGURATION DES RÉGIONS =====
@@ -67,6 +75,15 @@ class CombatView(View):
         self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
 
         # Select pour attaques du joueur
+        self.update_attack_select()
+
+    def update_attack_select(self):
+        """Met à jour le menu de sélection des attaques."""
+        # Retirer l'ancien select s'il existe
+        for item in self.children[:]:
+            if isinstance(item, Select):
+                self.remove_item(item)
+        
         options = [
             discord.SelectOption(label=a["nom"], description=f"Dégâts : {a['degats']}")
             for a in self.joueur["attaques"]
@@ -82,8 +99,9 @@ class CombatView(View):
 
     def pv_text(self):
         """Texte des PV du joueur et de l'ennemi."""
+        regions_restantes = len(self.regions_queue)
         return (
-            f"🗺️ **Région : {self.region.capitalize()}** ({len(self.ennemis_queue) + 1} ennemis restants)\n"
+            f"🗺️ **Région : {self.region.capitalize()}** ({len(self.ennemis_queue) + 1} ennemis | {regions_restantes} régions restantes)\n"
             f"🧑 {self.joueur['nom']} ❤️ {max(self.joueur['pv'], 0)} / {self.joueur.get('pv_max', self.joueur['pv'])} PV | "
             f"👾 {self.ennemi['nom']} ❤️ {max(self.ennemi['pv'], 0)} / {self.ennemi.get('pv_max', self.ennemi['pv'])} PV\n"
         )
@@ -108,11 +126,55 @@ class CombatView(View):
             view=self if self.tour_joueur else None,
             attachments=[file]
         )
-
         
-            
-        # Sauvegarder les PV dans la base de données
+        # Sauvegarder les stats dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
+        update_personnage_stats(self.user_id, self.joueur)
+        update_personnage_attaques(self.user_id, self.joueur["attaques"])
+
+    async def continuer_vers_prochaine_region(self, interaction):
+        """Continue vers la prochaine région après le shop."""
+        if not self.regions_queue:
+            # Plus de régions - victoire finale
+            update_personnage_pv(self.user_id, self.joueur["pv"])
+            update_personnage_stats(self.user_id, self.joueur)
+            
+            file = discord.File(fp="images/fin/fin.png", filename="fin.png")
+            await interaction.message.edit(
+                content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                        f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
+                view=None,
+                attachments=[file]
+            )
+            supprimer_personnage(self.user_id)
+            await interaction.followup.send(
+                f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
+                "Vous pouvez en créer un nouveau avec `/creer_personnage` !"
+            )
+            return
+        
+        # Passer à la région suivante
+        self.region = self.regions_queue.pop(0)
+        self.image_fond = f"images/fond/{self.region}.png"
+        
+        region_enemies = load_json(f"json/ennemies/{self.region}.json")
+        self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
+        self.ennemi = self.ennemis_queue.pop(0)
+        self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
+        
+        # Mettre à jour le select d'attaques au cas où de nouvelles ont été achetées
+        self.update_attack_select()
+        
+        # Restaurer les PV du joueur pour la nouvelle région
+        self.joueur['pv'] = self.joueur['pv_max']
+        update_personnage_pv(self.user_id, self.joueur['pv'])
+        
+        await self.update_message(
+            interaction,
+            extra_text=f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
+                       f"💚 **Vos PV ont été restaurés !**\n"
+                       f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
+        )
 
     async def joueur_attaque(self, interaction: discord.Interaction):
         # Vérifier que c'est bien le joueur qui a lancé le combat
@@ -144,38 +206,20 @@ class CombatView(View):
                                f"👾 **Prochain ennemi : {self.ennemi['nom']} !**"
                 )
                 return
-            elif self.regions_queue:
-                # Passer à la région suivante
-                self.region = self.regions_queue.pop(0)
-                self.image_fond = f"images/fond/{self.region}.png"
-                
-                region_enemies = load_json(f"json/ennemies/{self.region}.json")
-                self.ennemis_queue = random.sample(region_enemies, k=min(self.nb_ennemis_par_region, len(region_enemies)))
-                self.ennemi = self.ennemis_queue.pop(0)
-                self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
-                
+            else:
+                # Région terminée - afficher le shop
                 await self.update_message(
                     interaction,
-                    extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🏆 **Région terminée !**\n"
-                               f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
-                               f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
+                    extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                 )
-                return
-            else:
-                # Toutes les régions terminées - sauvegarder les PV finaux
-                update_personnage_pv(self.user_id, self.joueur["pv"])
                 
-                file = discord.File(fp="images/fin/fin.png", filename="fin.png")
-                await interaction.message.edit(
-                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
-                    view=None,
-                    attachments=[file]
-                )
-                supprimer_personnage(self.user_id)
-                await interaction.followup.send(
-                    f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
-                    "Vous pouvez en créer un nouveau avec `!creer_personnage` !"
+                # Afficher le shop
+                await afficher_shop(
+                    interaction,
+                    self.user_id,
+                    self.region,
+                    self.joueur,
+                    self.continuer_vers_prochaine_region
                 )
                 return
 

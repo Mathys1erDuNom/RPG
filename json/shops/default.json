@@ -1,0 +1,63 @@
+[
+    {
+      "id": 1,
+      "nom": "Épée Basique",
+      "emoji": "⚔️",
+      "prix": 40,
+      "type": "attaque",
+      "data": {
+        "nom": "Épée Basique",
+        "degats": 20,
+        "type": "physique",
+        "ratioattk": 25,
+        "ratiomagie": 0
+      }
+    },
+    {
+      "id": 2,
+      "nom": "Boule de Feu",
+      "emoji": "🔥",
+      "prix": 45,
+      "type": "attaque",
+      "data": {
+        "nom": "Boule de Feu",
+        "degats": 22,
+        "type": "magique",
+        "ratioattk": 0,
+        "ratiomagie": 35
+      }
+    },
+    {
+      "id": 3,
+      "nom": "Potion de Force",
+      "emoji": "💪",
+      "prix": 30,
+      "type": "stat",
+      "data": {
+        "stat": "force",
+        "value": 3
+      }
+    },
+    {
+      "id": 4,
+      "nom": "Potion de Vie",
+      "emoji": "❤️",
+      "prix": 35,
+      "type": "stat",
+      "data": {
+        "stat": "pv_max",
+        "value": 15
+      }
+    },
+    {
+      "id": 5,
+      "nom": "Armure Légère",
+      "emoji": "🛡️",
+      "prix": 25,
+      "type": "stat",
+      "data": {
+        "stat": "armure",
+        "value": 3
+      }
+    }
+  ]
