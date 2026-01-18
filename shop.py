@@ -169,14 +169,6 @@ class ShopView(View):
             )
             return
         
-        # Vérifier si le joueur a déjà 4 attaques (si c'est une attaque)
-        if item['type'] == 'attaque' and len(self.joueur['attaques']) >= 4:
-            await interaction.response.send_message(
-                "❌ Vous avez déjà 4 attaques maximum !",
-                ephemeral=True
-            )
-            return
-        
         # Acheter l'item
         self.gold -= item['prix']
         
