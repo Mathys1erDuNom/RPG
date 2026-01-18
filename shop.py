@@ -24,6 +24,8 @@ class ShopView(View):
         self.joueur = joueur
         self.on_continue_callback = on_continue_callback
         self.gold = 100  # Or gagné à la fin de la région
+        self.shop_message = None  # Référence au message du shop
+        self.channel = None  # Référence au canal
         
         # Charger les items du shop
         self.shop_items = load_shop_items(region)
@@ -218,6 +220,9 @@ class ShopView(View):
             embed=self.get_shop_embed(),
             view=self
         )
+        
+        # Mettre à jour la référence du message
+        self.shop_message = await interaction.original_response()
     
     async def continue_adventure(self, interaction: discord.Interaction):
         """Continue l'aventure vers la prochaine région."""
@@ -230,22 +235,18 @@ class ShopView(View):
         
         await interaction.response.defer()
         
-        # Désactiver tous les boutons
-        for item in self.children:
-            item.disabled = True
-        
-        await interaction.message.edit(
-            content="🗺️ **Vous partez vers la prochaine région...**",
-            view=self
-        )
+        # Supprimer le message du shop
+        if self.shop_message:
+            await self.shop_message.delete()
         
         # Appeler le callback pour continuer le combat
-        await self.on_continue_callback(interaction)
+        await self.on_continue_callback(interaction, self.channel)
 
 
 async def afficher_shop(interaction, user_id, region, joueur, on_continue_callback):
     """Affiche le shop de fin de région."""
     view = ShopView(user_id, region, joueur, on_continue_callback)
+    view.channel = interaction.channel  # Garder la référence du canal
     
     # Essayer de charger une image de fond pour le shop
     shop_image_path = f"images/shops/{region}.png"
@@ -253,17 +254,17 @@ async def afficher_shop(interaction, user_id, region, joueur, on_continue_callba
     if os.path.exists(shop_image_path):
         file = discord.File(shop_image_path, filename="shop.png")
     
+    # Envoyer un NOUVEAU message pour le shop
     if file:
-        await interaction.message.edit(
+        view.shop_message = await interaction.channel.send(
             content="",
             embed=view.get_shop_embed(),
             view=view,
-            attachments=[file]
+            file=file
         )
     else:
-        await interaction.message.edit(
+        view.shop_message = await interaction.channel.send(
             content="",
             embed=view.get_shop_embed(),
-            view=view,
-            attachments=[]
+            view=view
         )

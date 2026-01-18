@@ -52,6 +52,7 @@ class CombatView(View):
         super().__init__(timeout=None)
 
         self.user_id = user_id
+        self.combat_message = None  # Référence au message de combat
         
         # Charger le personnage depuis la base de données
         self.joueur = get_personnage(user_id)
@@ -121,18 +122,26 @@ class CombatView(View):
             content += extra_text + "\n"
         content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
 
-        await interaction.message.edit(
-            content=content,
-            view=self if self.tour_joueur else None,
-            attachments=[file]
-        )
+        # Utiliser la référence du message de combat
+        if self.combat_message:
+            await self.combat_message.edit(
+                content=content,
+                view=self if self.tour_joueur else None,
+                attachments=[file]
+            )
+        else:
+            await interaction.message.edit(
+                content=content,
+                view=self if self.tour_joueur else None,
+                attachments=[file]
+            )
         
         # Sauvegarder les stats dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
         update_personnage_stats(self.user_id, self.joueur)
         update_personnage_attaques(self.user_id, self.joueur["attaques"])
 
-    async def continuer_vers_prochaine_region(self, interaction):
+    async def continuer_vers_prochaine_region(self, interaction, channel):
         """Continue vers la prochaine région après le shop."""
         if not self.regions_queue:
             # Plus de régions - victoire finale
@@ -140,15 +149,15 @@ class CombatView(View):
             update_personnage_stats(self.user_id, self.joueur)
             
             file = discord.File(fp="images/fin/fin.png", filename="fin.png")
-            await interaction.message.edit(
+            await channel.send(
                 content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
                         f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
-                view=None,
-                attachments=[file]
+                file=file
             )
             supprimer_personnage(self.user_id)
-            await interaction.followup.send(
-                f"🗑️ {interaction.user.mention} Votre personnage a été supprimé après le combat. "
+            user = await interaction.client.fetch_user(int(self.user_id))
+            await channel.send(
+                f"🗑️ {user.mention} Votre personnage a été supprimé après le combat. "
                 "Vous pouvez en créer un nouveau avec `/creer_personnage` !"
             )
             return
@@ -169,11 +178,19 @@ class CombatView(View):
         self.joueur['pv'] = self.joueur['pv_max']
         update_personnage_pv(self.user_id, self.joueur['pv'])
         
-        await self.update_message(
-            interaction,
-            extra_text=f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
-                       f"💚 **Vos PV ont été restaurés !**\n"
-                       f"👾 **Premier ennemi : {self.ennemi['nom']} !**"
+        # Créer un NOUVEAU message de combat
+        file = self.get_combat_image()
+        content = self.pv_text()
+        content += f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
+        content += f"💚 **Vos PV ont été restaurés !**\n"
+        content += f"👾 **Premier ennemi : {self.ennemi['nom']} !**\n"
+        content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
+        
+        # Envoyer le nouveau message et garder la référence
+        self.combat_message = await channel.send(
+            content=content,
+            view=self if self.tour_joueur else None,
+            file=file
         )
 
     async def joueur_attaque(self, interaction: discord.Interaction):
@@ -287,6 +304,10 @@ async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_enn
             view=view,
             file=file
         )
+        
+        # Garder la référence du message initial
+        view.combat_message = await interaction.original_response()
+        
     except ValueError as e:
         await interaction.response.send_message(
             f"❌ Erreur : {str(e)}",
