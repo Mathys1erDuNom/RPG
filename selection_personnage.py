@@ -49,12 +49,12 @@ class SelectionPersonnageView(View):
             color=discord.Color.blue()
         )
         
-        # Attacher l'image du personnage avec un nom unique pour éviter le cache
+        # Attacher l'image du personnage - utiliser toujours le même nom
         image_path = perso.get('image', '')
         file = None
         if image_path and os.path.exists(image_path):
-            # Utiliser un nom de fichier unique basé sur l'index
-            filename = f"personnage_{self.selected_index}.png"
+            # Utiliser un nom de fichier fixe pour que Discord ne cache pas
+            filename = "personnage.png"
             file = discord.File(image_path, filename=filename)
             embed.set_thumbnail(url=f"attachment://{filename}")
         
@@ -108,10 +108,12 @@ class SelectionPersonnageView(View):
             
             embed, file = self.get_current_embed_and_file()
             
-            if file:
-                await interaction.response.edit_message(embed=embed, attachments=[file], view=self)
-            else:
-                await interaction.response.edit_message(embed=embed, view=self)
+            # Toujours envoyer le fichier dans une liste pour remplacer l'ancien
+            await interaction.response.edit_message(
+                embed=embed, 
+                attachments=[file] if file else [], 
+                view=self
+            )
     
     async def next_personnage(self, interaction: discord.Interaction):
         """Affiche le personnage suivant."""
@@ -128,10 +130,12 @@ class SelectionPersonnageView(View):
             
             embed, file = self.get_current_embed_and_file()
             
-            if file:
-                await interaction.response.edit_message(embed=embed, attachments=[file], view=self)
-            else:
-                await interaction.response.edit_message(embed=embed, view=self)
+            # Toujours envoyer le fichier dans une liste pour remplacer l'ancien
+            await interaction.response.edit_message(
+                embed=embed, 
+                attachments=[file] if file else [], 
+                view=self
+            )
     
     async def select_personnage(self, interaction: discord.Interaction):
         """Sélectionne le personnage actuel."""
@@ -160,18 +164,19 @@ class SelectionPersonnageView(View):
             color=discord.Color.green()
         )
         
-        # Attacher l'image du personnage avec un nom unique
+        # Attacher l'image du personnage
         image_path = perso.get('image', '')
         file = None
         if image_path and os.path.exists(image_path):
-            filename = f"personnage_selected_{self.selected_index}.png"
+            filename = "personnage_selected.png"
             file = discord.File(image_path, filename=filename)
             embed.set_thumbnail(url=f"attachment://{filename}")
         
-        if file:
-            await interaction.response.edit_message(embed=embed, attachments=[file], view=self)
-        else:
-            await interaction.response.edit_message(embed=embed, view=self)
+        await interaction.response.edit_message(
+            embed=embed, 
+            attachments=[file] if file else [], 
+            view=self
+        )
 
 
 async def afficher_selection_personnage(interaction: discord.Interaction):
