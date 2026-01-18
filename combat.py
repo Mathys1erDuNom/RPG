@@ -148,12 +148,32 @@ class CombatView(View):
             update_personnage_pv(self.user_id, self.joueur["pv"])
             update_personnage_stats(self.user_id, self.joueur)
             
-            file = discord.File(fp="images/fin/fin.png", filename="fin.png")
-            await channel.send(
-                content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                        f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}",
-                file=file
-            )
+            # Essayer de charger l'image de fin
+            fin_image_path = "images/fin/fin.png"
+            if os.path.exists(fin_image_path):
+                file = discord.File(fp=fin_image_path, filename="fin.png")
+                await channel.send(
+                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
+                            f"⚔️ Force finale : {self.joueur['force']}\n"
+                            f"🔮 Magie finale : {self.joueur['magie']}\n"
+                            f"🛡️ Armure finale : {self.joueur['armure']}\n"
+                            f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
+                            f"⚡ Vitesse finale : {self.joueur['vitesse']}",
+                    file=file
+                )
+            else:
+                # Pas d'image, juste le message
+                await channel.send(
+                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
+                            f"⚔️ Force finale : {self.joueur['force']}\n"
+                            f"🔮 Magie finale : {self.joueur['magie']}\n"
+                            f"🛡️ Armure finale : {self.joueur['armure']}\n"
+                            f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
+                            f"⚡ Vitesse finale : {self.joueur['vitesse']}"
+                )
+            
             supprimer_personnage(self.user_id)
             user = await interaction.client.fetch_user(int(self.user_id))
             await channel.send(
