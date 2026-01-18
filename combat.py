@@ -242,20 +242,61 @@ class CombatView(View):
                 )
                 return
             else:
-                # Région terminée - afficher le shop
-                await self.update_message(
-                    interaction,
-                    extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
-                )
-                
-                # Afficher le shop
-                await afficher_shop(
-                    interaction,
-                    self.user_id,
-                    self.region,
-                    self.joueur,
-                    self.continuer_vers_prochaine_region
-                )
+                # Région terminée
+                if self.regions_queue:
+                    # Il reste des régions - afficher le shop
+                    await self.update_message(
+                        interaction,
+                        extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
+                    )
+                    
+                    # Afficher le shop
+                    await afficher_shop(
+                        interaction,
+                        self.user_id,
+                        self.region,
+                        self.joueur,
+                        self.continuer_vers_prochaine_region
+                    )
+                else:
+                    # C'était la dernière région - victoire finale directe
+                    await self.update_message(
+                        interaction,
+                        extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Dernière région terminée !**"
+                    )
+                    
+                    # Afficher la victoire finale
+                    fin_image_path = "images/fin/fin.png"
+                    if os.path.exists(fin_image_path):
+                        file = discord.File(fp=fin_image_path, filename="fin.png")
+                        await interaction.channel.send(
+                            content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                                    f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
+                                    f"⚔️ Force finale : {self.joueur['force']}\n"
+                                    f"🔮 Magie finale : {self.joueur['magie']}\n"
+                                    f"🛡️ Armure finale : {self.joueur['armure']}\n"
+                                    f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
+                                    f"⚡ Vitesse finale : {self.joueur['vitesse']}",
+                            file=file
+                        )
+                    else:
+                        await interaction.channel.send(
+                            content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                                    f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
+                                    f"⚔️ Force finale : {self.joueur['force']}\n"
+                                    f"🔮 Magie finale : {self.joueur['magie']}\n"
+                                    f"🛡️ Armure finale : {self.joueur['armure']}\n"
+                                    f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
+                                    f"⚡ Vitesse finale : {self.joueur['vitesse']}"
+                        )
+                    
+                    # Supprimer le personnage
+                    supprimer_personnage(self.user_id)
+                    user = await interaction.client.fetch_user(int(self.user_id))
+                    await interaction.channel.send(
+                        f"🎮 {user.mention} Votre aventure est terminée ! Votre personnage a été supprimé.\n"
+                        "Vous pouvez créer un nouveau personnage avec `/creer_personnage` pour recommencer !"
+                    )
                 return
 
         # Passage au tour de l'ennemi
