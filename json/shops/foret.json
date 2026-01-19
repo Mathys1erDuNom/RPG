@@ -31,5 +31,16 @@
         "stat": "force",
         "value": 5
       }
+    },
+    {
+      "id": 3,
+      "nom": "Endurance de la Foret",
+      "emoji": "💚",
+      "prix": 50,
+      "type": "stat",
+      "data": {
+        "stat": "pv",
+        "value": 20
+      }
     }
   ]

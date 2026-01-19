@@ -20,7 +20,7 @@
       "prix": 50,
       "type": "stat",
       "data": {
-        "stat": "pv_max",
+        "stat": "pv",
         "value": 20
       }
     },
