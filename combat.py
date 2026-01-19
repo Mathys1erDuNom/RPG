@@ -193,6 +193,10 @@ class CombatView(View):
             view=self if self.tour_joueur else None,
             file=file
         )
+        # Si l'ennemi est plus rapide, il attaque immédiatement
+        if not self.tour_joueur:
+            await self.ennemi_attaque(interaction)
+
 
     async def joueur_attaque(self, interaction: discord.Interaction):
         # Vérifier que c'est bien le joueur qui a lancé le combat
@@ -343,6 +347,10 @@ async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_enn
         
         # Garder la référence du message initial
         view.combat_message = await interaction.original_response()
+        # Si l'ennemi commence, il attaque immédiatement
+        if not view.tour_joueur:
+            await view.ennemi_attaque(interaction)
+
         
     except ValueError as e:
         await interaction.response.send_message(
