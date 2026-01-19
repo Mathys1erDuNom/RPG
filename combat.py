@@ -245,16 +245,16 @@ class CombatView(View):
                 )
                 return
             else:
-                # Région terminée
+                # Région terminée - SUPPRIMER IMMÉDIATEMENT le message de combat
+                if self.combat_message:
+                    try:
+                        await self.combat_message.delete()
+                        self.combat_message = None  # Réinitialiser la référence
+                    except:
+                        pass
+                
                 if self.regions_queue:
-                    # Il reste des régions - SUPPRIMER le message de combat AVANT d'envoyer le nouveau
-                    if self.combat_message:
-                        try:
-                            await self.combat_message.delete()
-                        except:
-                            pass  # Ignorer si le message n'existe plus
-                    
-                    # Afficher le message de victoire
+                    # Il reste des régions - afficher le message de victoire puis le shop
                     await interaction.channel.send(
                         f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                     )
@@ -268,14 +268,7 @@ class CombatView(View):
                         self.continuer_vers_prochaine_region
                     )
                 else:
-                    # C'était la dernière région - SUPPRIMER le message de combat AVANT
-                    if self.combat_message:
-                        try:
-                            await self.combat_message.delete()
-                        except:
-                            pass
-                    
-                    # Victoire finale directe
+                    # C'était la dernière région - victoire finale directe
                     fin_image_path = "images/fin/fin.png"
                     if os.path.exists(fin_image_path):
                         file = discord.File(fp=fin_image_path, filename="fin.png")
