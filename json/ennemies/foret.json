@@ -1,15 +1,15 @@
 [
   
   {
-    "nom": "Troll",
-    "pv": 15,
-    "pv_max": 15,
+    "nom": "Femme Orc",
+    "pv": 50,
+    "pv_max": 50,
     "vitesse": 5,
-    "force": 3,
+    "force": 40,
     "magie": 2,
     "armure": 5,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/troll.jpeg",
+    "image": "images/region/foret/ennemies/orcF.png",
     "attaques": [
       {
         "nom": "Morsure",
