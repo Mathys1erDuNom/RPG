@@ -237,7 +237,11 @@ class CombatView(View):
                         await message_to_delete.delete()
                     except Exception as e:
                         print(f"Erreur suppression message: {e}")
-                
+                try:
+                    await interaction.message.edit(view=None)
+                except:
+                    pass        
+                                
                 if self.regions_queue:
                     # Il reste des régions - afficher le message de victoire puis le shop
                     await interaction.channel.send(
