@@ -222,6 +222,9 @@ class CombatView(View):
 
 
     async def joueur_attaque(self, interaction: discord.Interaction):
+        if interaction.response.is_done():
+            return
+
         # Vérifier que c'est bien le joueur qui a lancé le combat
         if str(interaction.user.id) != self.user_id:
             await interaction.response.send_message(
@@ -305,33 +308,37 @@ class CombatView(View):
         # Passage au tour de l'ennemi
         self.tour_joueur = False
         await self.update_message_sans_interaction(extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**")
-        await self.ennemi_attaque()
+        await self.ennemi_attaque(interaction)
 
-    async def ennemi_attaque(self, interaction: discord.Interaction):
+    async def ennemi_attaque(self, interaction: discord.Interaction | None = None):
         attaque = random.choice(self.ennemi["attaques"])
         degats = calcul_degats(attaque, self.ennemi, self.joueur)
         self.joueur["pv"] -= degats
 
+        texte = f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
+
         if self.joueur["pv"] <= 0:
-            # Joueur KO - afficher le message de défaite
-            await self.update_message(
-                interaction,
-                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
-                           f"💀 **Vous avez été vaincu...**\n"
-                           f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
+            texte += (
+                "\n💀 **Vous avez été vaincu...**\n"
+                "🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
             )
-            
-            # Supprimer complètement le personnage (attaques et stats comprises)
+
+            if interaction:
+                await self.update_message(interaction, extra_text=texte)
+            else:
+                await self.update_message_sans_interaction(extra_text=texte)
+
             supprimer_personnage(self.user_id)
-            
             return
+
+        # Retour au joueur
+        self.tour_joueur = True
+
+        if interaction:
+            await self.update_message(interaction, extra_text=texte)
         else:
-            # Retour au joueur
-            self.tour_joueur = True
-            await self.update_message(
-                interaction,
-                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
-            )
+            await self.update_message_sans_interaction(extra_text=texte)
+
 
 
 async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_ennemis_par_region=10):
@@ -372,7 +379,7 @@ async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_enn
         view.combat_message = await interaction.original_response()
         # Si l'ennemi commence, il attaque immédiatement
         if not view.tour_joueur:
-            await view.ennemi_attaque()
+            await view.ennemi_attaque(interaction)
 
         
     except ValueError as e:
