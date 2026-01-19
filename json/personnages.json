@@ -10,7 +10,7 @@
     "magie": 6,
     "armure": 30,
     "armure_magique": 20,
-    "image": "images/personnages/chevalier.jpg",
+    "image": "images/personnages/guerrier.png",
     "attaques": [
       {
         "nom": "Morsure",
@@ -37,7 +37,7 @@
   },
   {
     "race": "Elfe",
-    "nom": "Sylvaine",
+    "nom": "Sylvain",
     "description" : "Elfe de Breham",
     "pv": 80,
     "pv_max": 80,
@@ -46,7 +46,7 @@
     "magie": 20,
     "armure": 15,
     "armure_magique": 35,
-    "image": "images/region/desert/ennemies/gobelin.png",
+    "image": "images/personnages/elfe.png",
     "attaques": [
       {
         "nom": "Flèche Enchantée",
