@@ -143,6 +143,13 @@ class CombatView(View):
 
     async def continuer_vers_prochaine_region(self, interaction, channel):
         """Continue vers la prochaine région après le shop."""
+        # SUPPRIMER l'ancien message de combat avant de continuer
+        if self.combat_message:
+            try:
+                await self.combat_message.delete()
+            except:
+                pass
+        
         if not self.regions_queue:
             # Plus de régions - victoire finale
             # Essayer de charger l'image de fin
