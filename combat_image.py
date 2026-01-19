@@ -20,8 +20,8 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     ennemi_img = ennemi_img.resize((250, 250))
     
     # Coller sur le fond
-    fond.paste(perso_img, (50, fond.height - 300), perso_img)
-    fond.paste(ennemi_img, (fond.width - 300, 50), ennemi_img)
+    fond.paste(perso_img, (50, fond.height - 270), perso_img)
+    fond.paste(ennemi_img, (fond.width - 350, 50), ennemi_img)
     
     # Dessiner barres de PV
     draw = ImageDraw.Draw(fond)
@@ -37,18 +37,18 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     
     # Fond gris
     draw.rectangle(
-        (50, fond.height - 320, 50 + barre_largeur, fond.height - 320 + barre_hauteur),
+        (50, fond.height - 290, 50 + barre_largeur, fond.height - 290 + barre_hauteur),
         fill=(50, 50, 50)  # gris foncé
     )
     
     # Partie pleine (verte)
     largeur_pv_joueur = int(barre_largeur * pv_joueur / pv_max_joueur) if pv_max_joueur > 0 else 0
     draw.rectangle(
-        (50, fond.height - 320, 50 + largeur_pv_joueur, fond.height - 320 + barre_hauteur),
+        (50, fond.height - 290, 50 + largeur_pv_joueur, fond.height - 290 + barre_hauteur),
         fill=(0, 255, 0)
     )
     
-    draw.text((50, fond.height - 340), f"{joueur['nom']} {pv_joueur}/{pv_max_joueur} PV", fill="white", font=font)
+    draw.text((50, fond.height - 310), f"{joueur['nom']} {pv_joueur}/{pv_max_joueur} PV", fill="white", font=font)
     
     # ------------------ Ennemi ------------------
     pv_ennemi = max(ennemi["pv"], 0)
@@ -56,18 +56,18 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     
     # Fond gris
     draw.rectangle(
-        (fond.width - 300, 30, fond.width - 300 + barre_largeur, 30 + barre_hauteur),
+        (fond.width - 350, 30, fond.width - 350 + barre_largeur, 30 + barre_hauteur),
         fill=(50, 50, 50)
     )
     
     # Partie pleine (rouge)
     largeur_pv_ennemi = int(barre_largeur * pv_ennemi / pv_max_ennemi) if pv_max_ennemi > 0 else 0
     draw.rectangle(
-        (fond.width - 300, 30, fond.width - 300 + largeur_pv_ennemi, 30 + barre_hauteur),
+        (fond.width - 350, 30, fond.width - 350 + largeur_pv_ennemi, 30 + barre_hauteur),
         fill=(255, 0, 0)
     )
     
-    draw.text((fond.width - 300, 10), f"{ennemi['nom']} {pv_ennemi}/{pv_max_ennemi} PV", fill="white", font=font)
+    draw.text((fond.width - 350, 10), f"{ennemi['nom']} {pv_ennemi}/{pv_max_ennemi} PV", fill="white", font=font)
     
     # Retourner en BytesIO
     output = io.BytesIO()
