@@ -1,8 +1,8 @@
 [
   {
     "nom": "Gobelin",
-    "pv": 30,
-    "pv_max": 30,
+    "pv": 50,
+    "pv_max": 50,
     "vitesse": 9,
     "force": 12,
     "magie": 2,
@@ -28,8 +28,8 @@
   },
   {
     "nom": "Gobelin2",
-    "pv": 30,
-    "pv_max": 30,
+    "pv": 50,
+    "pv_max": 50,
     "vitesse": 9,
     "force": 12,
     "magie": 2,
