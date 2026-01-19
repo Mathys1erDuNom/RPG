@@ -123,18 +123,15 @@ class CombatView(View):
         content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
 
         # Utiliser la référence du message de combat
-        if self.combat_message:
-            await self.combat_message.edit(
-                content=content,
-                view=self if self.tour_joueur else None,
-                attachments=[file]
-            )
-        else:
-            await interaction.message.edit(
-                content=content,
-                view=self if self.tour_joueur else None,
-                attachments=[file]
-            )
+        if not self.combat_message:
+            # Sécurité absolue : on ne modifie QUE le message de combat
+            self.combat_message = interaction.message
+
+        await self.combat_message.edit(
+            content=content,
+            view=self if self.tour_joueur else None,
+            attachments=[file]
+        )
         
         # Sauvegarder les stats dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
@@ -237,10 +234,7 @@ class CombatView(View):
                         await message_to_delete.delete()
                     except Exception as e:
                         print(f"Erreur suppression message: {e}")
-                try:
-                    await interaction.message.edit(view=None)
-                except:
-                    pass        
+                   
                                 
                 if self.regions_queue:
                     # Il reste des régions - afficher le message de victoire puis le shop
