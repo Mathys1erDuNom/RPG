@@ -16,7 +16,7 @@
         "nom": "Coup d'épée",
         "degats": 20,
         "type": "physique",
-        "ratioattk": 150,
+        "ratioattk": 80,
         "ratiomagie": 0
       }
     ]

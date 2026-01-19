@@ -2,8 +2,8 @@
   
   {
     "nom": "Femme Orc",
-    "pv": 30,
-    "pv_max": 30,
+    "pv": 45,
+    "pv_max": 45,
     "vitesse": 9,
     "force": 30,
     "magie": 2,
