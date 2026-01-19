@@ -238,12 +238,17 @@ class CombatView(View):
                 )
                 return
             else:
-                # Région terminée
+                # Région terminée - SUPPRIMER le message de combat
+                if self.combat_message:
+                    try:
+                        await self.combat_message.delete()
+                    except:
+                        pass  # Ignorer si le message n'existe plus
+                
                 if self.regions_queue:
                     # Il reste des régions - afficher le shop
-                    await self.update_message(
-                        interaction,
-                        extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
+                    await interaction.channel.send(
+                        f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                     )
                     
                     # Afficher le shop
@@ -256,17 +261,13 @@ class CombatView(View):
                     )
                 else:
                     # C'était la dernière région - victoire finale directe
-                    await self.update_message(
-                        interaction,
-                        extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Dernière région terminée !**"
-                    )
-                    
-                    # Afficher la victoire finale
                     fin_image_path = "images/fin/fin.png"
                     if os.path.exists(fin_image_path):
                         file = discord.File(fp=fin_image_path, filename="fin.png")
                         await interaction.channel.send(
-                            content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                            content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
+                                    f"🎉 **Dernière région terminée !**\n\n"
+                                    f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
                                     f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
                                     f"⚔️ Force finale : {self.joueur['force']}\n"
                                     f"🔮 Magie finale : {self.joueur['magie']}\n"
@@ -277,7 +278,9 @@ class CombatView(View):
                         )
                     else:
                         await interaction.channel.send(
-                            content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                            content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
+                                    f"🎉 **Dernière région terminée !**\n\n"
+                                    f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
                                     f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
                                     f"⚔️ Force finale : {self.joueur['force']}\n"
                                     f"🔮 Magie finale : {self.joueur['magie']}\n"
