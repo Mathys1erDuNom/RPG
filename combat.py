@@ -261,12 +261,7 @@ class CombatView(View):
                             content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
                                     f"🎉 **Dernière région terminée !**\n\n"
                                     f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                                    f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
-                                    f"⚔️ Force finale : {self.joueur['force']}\n"
-                                    f"🔮 Magie finale : {self.joueur['magie']}\n"
-                                    f"🛡️ Armure finale : {self.joueur['armure']}\n"
-                                    f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
-                                    f"⚡ Vitesse finale : {self.joueur['vitesse']}",
+                                ,
                             file=file
                         )
                     else:
@@ -274,21 +269,12 @@ class CombatView(View):
                             content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
                                     f"🎉 **Dernière région terminée !**\n\n"
                                     f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                                    f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
-                                    f"⚔️ Force finale : {self.joueur['force']}\n"
-                                    f"🔮 Magie finale : {self.joueur['magie']}\n"
-                                    f"🛡️ Armure finale : {self.joueur['armure']}\n"
-                                    f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
-                                    f"⚡ Vitesse finale : {self.joueur['vitesse']}"
+                                   
                         )
                     
                     # Supprimer le personnage
                     supprimer_personnage(self.user_id)
-                    user = await interaction.client.fetch_user(int(self.user_id))
-                    await interaction.channel.send(
-                        f"🎮 {user.mention} Votre aventure est terminée ! Votre personnage a été supprimé.\n"
-                        "Vous pouvez créer un nouveau personnage avec `/creer_personnage` pour recommencer !"
-                    )
+                    
                 return
 
         # Passage au tour de l'ennemi
