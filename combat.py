@@ -78,6 +78,31 @@ class CombatView(View):
         # Select pour attaques du joueur
         self.update_attack_select()
 
+
+
+
+    async def update_message_sans_interaction(self, extra_text=""):
+        if not self.combat_message:
+            return
+
+        file = self.get_combat_image()
+
+        content = self.pv_text()
+        if extra_text:
+            content += extra_text + "\n"
+        content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
+
+        await self.combat_message.edit(
+            content=content,
+            view=self if self.tour_joueur else None,
+            attachments=[file]
+        )
+
+        update_personnage_pv(self.user_id, self.joueur["pv"])
+        update_personnage_stats(self.user_id, self.joueur)
+        update_personnage_attaques(self.user_id, self.joueur["attaques"])
+
+
     def update_attack_select(self):
         """Met à jour le menu de sélection des attaques."""
         # Retirer l'ancien select s'il existe
@@ -124,9 +149,7 @@ class CombatView(View):
 
         # Utiliser la référence du message de combat
         if not self.combat_message:
-            # Sécurité absolue : on ne modifie QUE le message de combat
-            self.combat_message = interaction.message
-
+            return  # sécurité absolue
         await self.combat_message.edit(
             content=content,
             view=self if self.tour_joueur else None,
@@ -281,8 +304,8 @@ class CombatView(View):
 
         # Passage au tour de l'ennemi
         self.tour_joueur = False
-        await self.update_message(interaction, extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**")
-        await self.ennemi_attaque(interaction)
+        await self.update_message_sans_interaction(extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**")
+        await self.ennemi_attaque()
 
     async def ennemi_attaque(self, interaction: discord.Interaction):
         attaque = random.choice(self.ennemi["attaques"])
@@ -349,7 +372,7 @@ async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_enn
         view.combat_message = await interaction.original_response()
         # Si l'ennemi commence, il attaque immédiatement
         if not view.tour_joueur:
-            await view.ennemi_attaque(interaction)
+            await view.ennemi_attaque()
 
         
     except ValueError as e:
