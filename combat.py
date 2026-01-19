@@ -53,8 +53,6 @@ class CombatView(View):
 
         self.user_id = user_id
         self.combat_message = None  # Référence au message de combat
-        self.region_end_message = None
-
         
         # Charger le personnage depuis la base de données
         self.joueur = get_personnage(user_id)
@@ -141,16 +139,6 @@ class CombatView(View):
         update_personnage_attaques(self.user_id, self.joueur["attaques"])
 
     async def continuer_vers_prochaine_region(self, interaction, channel):
-
-
-        # Nettoyage des messages temporaires
-        if self.region_end_message:
-            try:
-                await self.region_end_message.delete()
-            except:
-                pass
-            self.region_end_message = None
-
         """Continue vers la prochaine région après le shop."""
         if not self.regions_queue:
             # Plus de régions - victoire finale
@@ -246,13 +234,12 @@ class CombatView(View):
                         await message_to_delete.delete()
                     except Exception as e:
                         print(f"Erreur suppression message: {e}")
-                   
+                  
                                 
                 if self.regions_queue:
                     # Il reste des régions - afficher le message de victoire puis le shop
-                    self.region_end_message = await interaction.channel.send(
-                        f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
-                        f"🎉 **Région {self.region.capitalize()} terminée !**"
+                    await interaction.channel.send(
+                        f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                     )
                     
                     # Afficher le shop
