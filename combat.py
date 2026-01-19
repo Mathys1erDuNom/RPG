@@ -238,13 +238,15 @@ class CombatView(View):
                 )
                 return
             else:
-                # Région terminée - SUPPRIMER IMMÉDIATEMENT le message de combat AVANT TOUT
-                if self.combat_message:
+                # Région terminée - TOUJOURS supprimer le message de combat IMMÉDIATEMENT
+                message_to_delete = self.combat_message
+                self.combat_message = None  # Réinitialiser d'abord
+                
+                if message_to_delete:
                     try:
-                        await self.combat_message.delete()
-                        self.combat_message = None
-                    except:
-                        pass
+                        await message_to_delete.delete()
+                    except Exception as e:
+                        print(f"Erreur suppression message: {e}")
                 
                 if self.regions_queue:
                     # Il reste des régions - afficher le message de victoire puis le shop
