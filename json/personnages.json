@@ -6,32 +6,18 @@
     "pv": 100,
     "pv_max": 100,
     "vitesse": 10,
-    "force": 15,
-    "magie": 6,
+    "force": 20,
+    "magie": 5,
     "armure": 30,
     "armure_magique": 20,
     "image": "images/personnages/guerrier.png",
     "attaques": [
       {
-        "nom": "Morsure",
-        "degats": 50,
+        "nom": "Coup d'épée",
+        "degats": 25,
         "type": "physique",
-        "ratioattk": 100,
+        "ratioattk": 150,
         "ratiomagie": 0
-      },
-      {
-        "nom": "Griffe",
-        "degats": 3,
-        "type": "physique",
-        "ratioattk": 80,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Boule de Feu",
-        "degats": 30,
-        "type": "magique",
-        "ratioattk": 0,
-        "ratiomagie": 150
       }
     ]
   },
@@ -42,8 +28,8 @@
     "pv": 80,
     "pv_max": 80,
     "vitesse": 18,
-    "force": 8,
-    "magie": 20,
+    "force": 10,
+    "magie": 25,
     "armure": 15,
     "armure_magique": 35,
     "image": "images/personnages/elfe.png",
@@ -52,15 +38,8 @@
         "nom": "Flèche Enchantée",
         "degats": 20,
         "type": "hybride",
-        "ratioattk": 50,
-        "ratiomagie": 80
-      },
-      {
-        "nom": "Tempête de Glace",
-        "degats": 40,
-        "type": "magique",
-        "ratioattk": 0,
-        "ratiomagie": 160
+        "ratioattk": 30,
+        "ratiomagie": 150
       },
       {
         "nom": "Tir Rapide",

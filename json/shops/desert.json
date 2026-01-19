@@ -9,21 +9,7 @@
         "nom": "Tempête de Sable",
         "degats": 30,
         "type": "hybride",
-        "ratioattk": 20,
-        "ratiomagie": 30
-      }
-    },
-    {
-      "id": 2,
-      "nom": "Rayon Solaire",
-      "emoji": "☀️",
-      "prix": 70,
-      "type": "attaque",
-      "data": {
-        "nom": "Rayon Solaire",
-        "degats": 35,
-        "type": "magique",
-        "ratioattk": 0,
+        "ratioattk": 30,
         "ratiomagie": 50
       }
     },
@@ -46,7 +32,7 @@
       "type": "stat",
       "data": {
         "stat": "magie",
-        "value": 5
+        "value": 10
       }
     },
     {
@@ -57,7 +43,7 @@
       "type": "stat",
       "data": {
         "stat": "armure_magique",
-        "value": 6
+        "value": 10
       }
     }
   ]

@@ -1,33 +1,5 @@
 [
     {
-      "id": 1,
-      "nom": "Coup de Liane",
-      "emoji": "🌿",
-      "prix": 50,
-      "type": "attaque",
-      "data": {
-        "nom": "Coup de Liane",
-        "degats": 25,
-        "type": "physique",
-        "ratioattk": 30,
-        "ratiomagie": 0
-      }
-    },
-    {
-      "id": 2,
-      "nom": "Poison Naturel",
-      "emoji": "☠️",
-      "prix": 60,
-      "type": "attaque",
-      "data": {
-        "nom": "Poison Naturel",
-        "degats": 20,
-        "type": "magique",
-        "ratioattk": 0,
-        "ratiomagie": 40
-      }
-    },
-    {
       "id": 3,
       "nom": "Armure de Bois",
       "emoji": "🛡️",
@@ -46,7 +18,7 @@
       "type": "stat",
       "data": {
         "stat": "vitesse",
-        "value": 3
+        "value": 8
       }
     },
     {
@@ -57,7 +29,7 @@
       "type": "stat",
       "data": {
         "stat": "force",
-        "value": 4
+        "value": 5
       }
     }
   ]

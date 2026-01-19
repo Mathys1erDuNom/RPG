@@ -2,27 +2,27 @@
   
   {
     "nom": "Femme Orc",
-    "pv": 50,
-    "pv_max": 50,
-    "vitesse": 5,
-    "force": 40,
+    "pv": 30,
+    "pv_max": 30,
+    "vitesse": 15,
+    "force": 30,
     "magie": 2,
     "armure": 5,
     "armure_magique": 5,
     "image": "images/region/foret/ennemies/orcF.png",
     "attaques": [
       {
-        "nom": "Morsure",
-        "degats": 4,
+        "nom": "Coup de massue",
+        "degats": 20,
         "type": "physique",
-        "ratioattk": 100,
+        "ratioattk": 80,
         "ratiomagie": 0
       },
       {
         "nom": "Griffe",
-        "degats": 3,
+        "degats": 10,
         "type": "physique",
-        "ratioattk": 80,
+        "ratioattk": 50,
         "ratiomagie": 0
       }
     ]
@@ -39,17 +39,17 @@
     "image": "images/region/foret/ennemies/orcH.png",
     "attaques": [
       {
-        "nom": "Morsure",
-        "degats": 4,
+        "nom": "Coup de massue",
+        "degats": 20,
         "type": "physique",
-        "ratioattk": 100,
+        "ratioattk": 80,
         "ratiomagie": 0
       },
       {
         "nom": "Griffe",
-        "degats": 3,
+        "degats": 10,
         "type": "physique",
-        "ratioattk": 80,
+        "ratioattk": 50,
         "ratiomagie": 0
       }
     ]

@@ -1,10 +1,10 @@
 [
   {
     "nom": "Gobelin",
-    "pv": 15,
-    "pv_max": 15,
-    "vitesse": 5,
-    "force": 3,
+    "pv": 30,
+    "pv_max": 30,
+    "vitesse": 9,
+    "force": 12,
     "magie": 2,
     "armure": 5,
     "armure_magique": 5,
@@ -12,14 +12,14 @@
     "attaques": [
       {
         "nom": "Morsure",
-        "degats": 4,
+        "degats": 15,
         "type": "physique",
         "ratioattk": 100,
         "ratiomagie": 0
       },
       {
         "nom": "Griffe",
-        "degats": 3,
+        "degats": 10,
         "type": "physique",
         "ratioattk": 80,
         "ratiomagie": 0
@@ -27,11 +27,11 @@
     ]
   },
   {
-    "nom": "Gobelin2-m ",
-    "pv": 15,
-    "pv_max": 15,
-    "vitesse": 5,
-    "force": 3,
+    "nom": "Gobelin2",
+    "pv": 30,
+    "pv_max": 30,
+    "vitesse": 9,
+    "force": 12,
     "magie": 2,
     "armure": 5,
     "armure_magique": 5,
@@ -39,14 +39,14 @@
     "attaques": [
       {
         "nom": "Morsure",
-        "degats": 4,
+        "degats": 15,
         "type": "physique",
         "ratioattk": 100,
         "ratiomagie": 0
       },
       {
         "nom": "Griffe",
-        "degats": 3,
+        "degats": 10,
         "type": "physique",
         "ratioattk": 80,
         "ratiomagie": 0
