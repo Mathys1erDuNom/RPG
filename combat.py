@@ -78,31 +78,6 @@ class CombatView(View):
         # Select pour attaques du joueur
         self.update_attack_select()
 
-
-
-
-    async def update_message_sans_interaction(self, extra_text=""):
-        if not self.combat_message:
-            return
-
-        file = self.get_combat_image()
-
-        content = self.pv_text()
-        if extra_text:
-            content += extra_text + "\n"
-        content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
-
-        await self.combat_message.edit(
-            content=content,
-            view=self if self.tour_joueur else None,
-            attachments=[file]
-        )
-
-        update_personnage_pv(self.user_id, self.joueur["pv"])
-        update_personnage_stats(self.user_id, self.joueur)
-        update_personnage_attaques(self.user_id, self.joueur["attaques"])
-
-
     def update_attack_select(self):
         """Met à jour le menu de sélection des attaques."""
         # Retirer l'ancien select s'il existe
@@ -148,13 +123,18 @@ class CombatView(View):
         content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
 
         # Utiliser la référence du message de combat
-        if not self.combat_message:
-            return  # sécurité absolue
-        await self.combat_message.edit(
-            content=content,
-            view=self if self.tour_joueur else None,
-            attachments=[file]
-        )
+        if self.combat_message:
+            await self.combat_message.edit(
+                content=content,
+                view=self if self.tour_joueur else None,
+                attachments=[file]
+            )
+        else:
+            await interaction.message.edit(
+                content=content,
+                view=self if self.tour_joueur else None,
+                attachments=[file]
+            )
         
         # Sauvegarder les stats dans la base de données
         update_personnage_pv(self.user_id, self.joueur["pv"])
@@ -216,67 +196,117 @@ class CombatView(View):
             view=self if self.tour_joueur else None,
             file=file
         )
-        # Si l'ennemi est plus rapide, il attaque immédiatement
-        if not self.tour_joueur:
-            await self.ennemi_attaque(interaction)
-
 
     async def joueur_attaque(self, interaction: discord.Interaction):
-        # Sécurité
+        # Vérifier que c'est bien le joueur qui a lancé le combat
         if str(interaction.user.id) != self.user_id:
             await interaction.response.send_message(
                 "❌ Ce n'est pas votre combat !",
                 ephemeral=True
             )
             return
-
+            
         if not self.tour_joueur:
             await interaction.response.defer()
             return
-
-        # IMPORTANT : defer UNE SEULE FOIS
         await interaction.response.defer()
 
-        # Récupération SAFE de l'attaque sélectionnée
-        attaque_nom = interaction.data["values"][0]
-        attaque = next(
-            a for a in self.joueur["attaques"]
-            if a["nom"] == attaque_nom
-        )
-
+        attaque = next(a for a in self.joueur["attaques"] if a["nom"] == self.select_attacks.values[0])
         degats = calcul_degats(attaque, self.joueur, self.ennemi)
         self.ennemi["pv"] -= degats
 
-
-        async def ennemi_attaque(self, interaction: discord.Interaction | None = None):
-            attaque = random.choice(self.ennemi["attaques"])
-            degats = calcul_degats(attaque, self.ennemi, self.joueur)
-            self.joueur["pv"] -= degats
-
-            texte = f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
-
-            if self.joueur["pv"] <= 0:
-                texte += (
-                    "\n💀 **Vous avez été vaincu...**\n"
-                    "🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
+        # Ennemi KO
+        if self.ennemi["pv"] <= 0:
+            if self.ennemis_queue:
+                # Passer au prochain ennemi dans la même région
+                self.ennemi = self.ennemis_queue.pop(0)
+                self.tour_joueur = self.joueur["vitesse"] >= self.ennemi["vitesse"]
+                await self.update_message(
+                    interaction,
+                    extra_text=f"💥 **{attaque['nom']} inflige {degats} PV !**\n🏆 **Vous avez vaincu cet ennemi !**\n"
+                               f"👾 **Prochain ennemi : {self.ennemi['nom']} !**"
                 )
-
-                if interaction:
-                    await self.update_message(interaction, extra_text=texte)
+                return
+            else:
+                # Région terminée - TOUJOURS supprimer le message de combat IMMÉDIATEMENT
+                message_to_delete = self.combat_message
+                self.combat_message = None  # Réinitialiser d'abord
+                
+                if message_to_delete:
+                    try:
+                        await message_to_delete.delete()
+                    except Exception as e:
+                        print(f"Erreur suppression message: {e}")
+                
+                if self.regions_queue:
+                    # Il reste des régions - afficher le message de victoire puis le shop
+                    await interaction.channel.send(
+                        f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
+                    )
+                    
+                    # Afficher le shop
+                    await afficher_shop(
+                        interaction,
+                        self.user_id,
+                        self.region,
+                        self.joueur,
+                        self.continuer_vers_prochaine_region
+                    )
                 else:
-                    await self.update_message_sans_interaction(extra_text=texte)
-
-                supprimer_personnage(self.user_id)
+                    # C'était la dernière région - victoire finale directe
+                    fin_image_path = "images/fin/fin.png"
+                    if os.path.exists(fin_image_path):
+                        file = discord.File(fp=fin_image_path, filename="fin.png")
+                        await interaction.channel.send(
+                            content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
+                                    f"🎉 **Dernière région terminée !**\n\n"
+                                    f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                                ,
+                            file=file
+                        )
+                    else:
+                        await interaction.channel.send(
+                            content=f"💥 **{attaque['nom']} inflige {degats} PV !**\n"
+                                    f"🎉 **Dernière région terminée !**\n\n"
+                                    f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
+                                   
+                        )
+                    
+                    # Supprimer le personnage
+                    supprimer_personnage(self.user_id)
+                    
                 return
 
+        # Passage au tour de l'ennemi
+        self.tour_joueur = False
+        await self.update_message(interaction, extra_text=f"💥 **Vous utilisez {attaque['nom']} et infligez {degats} PV !**")
+        await self.ennemi_attaque(interaction)
+
+    async def ennemi_attaque(self, interaction: discord.Interaction):
+        attaque = random.choice(self.ennemi["attaques"])
+        degats = calcul_degats(attaque, self.ennemi, self.joueur)
+        self.joueur["pv"] -= degats
+
+        if self.joueur["pv"] <= 0:
+            # Joueur KO - afficher le message de défaite
+            await self.update_message(
+                interaction,
+                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
+                           f"💀 **Vous avez été vaincu...**\n"
+                           f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
+            )
+            
+            # Supprimer complètement le personnage (attaques et stats comprises)
+            supprimer_personnage(self.user_id)
+            
+            return
+        else:
             # Retour au joueur
             self.tour_joueur = True
-
-            if interaction:
-                await self.update_message(interaction, extra_text=texte)
-            else:
-                await self.update_message_sans_interaction(extra_text=texte)
-
+            await self.update_message(
+                interaction,
+                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**"
+            )
 
 
 async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_ennemis_par_region=10):
@@ -315,10 +345,6 @@ async def demarrer_combat(interaction: discord.Interaction, nb_regions=3, nb_enn
         
         # Garder la référence du message initial
         view.combat_message = await interaction.original_response()
-        # Si l'ennemi commence, il attaque immédiatement
-        if not view.tour_joueur:
-            await view.ennemi_attaque(interaction)
-
         
     except ValueError as e:
         await interaction.response.send_message(
