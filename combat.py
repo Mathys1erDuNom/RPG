@@ -151,24 +151,14 @@ class CombatView(View):
                 file = discord.File(fp=fin_image_path, filename="fin.png")
                 await channel.send(
                     content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
-                            f"⚔️ Force finale : {self.joueur['force']}\n"
-                            f"🔮 Magie finale : {self.joueur['magie']}\n"
-                            f"🛡️ Armure finale : {self.joueur['armure']}\n"
-                            f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
-                            f"⚡ Vitesse finale : {self.joueur['vitesse']}",
+                       ,
                     file=file
                 )
             else:
                 # Pas d'image, juste le message
                 await channel.send(
                     content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                            f"❤️ PV restants : {self.joueur['pv']}/{self.joueur['pv_max']}\n"
-                            f"⚔️ Force finale : {self.joueur['force']}\n"
-                            f"🔮 Magie finale : {self.joueur['magie']}\n"
-                            f"🛡️ Armure finale : {self.joueur['armure']}\n"
-                            f"✨ Armure Magique finale : {self.joueur['armure_magique']}\n"
-                            f"⚡ Vitesse finale : {self.joueur['vitesse']}"
+                           
                 )
             
             # Supprimer complètement le personnage
