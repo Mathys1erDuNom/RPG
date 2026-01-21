@@ -237,26 +237,46 @@ class ShopView(View):
 
 async def afficher_shop(interaction, user_id, region, joueur, on_continue_callback):
     """Affiche le shop de fin de région."""
-    view = ShopView(user_id, region, joueur, on_continue_callback)
-    view.channel = interaction.channel  # Garder la référence du canal
+    print(f"DEBUG SHOP: Début afficher_shop pour région={region}, user_id={user_id}")
     
-    # Essayer de charger une image de fond pour le shop
-    shop_image_path = f"images/shops/{region}.png"
-    file = None
-    if os.path.exists(shop_image_path):
-        file = discord.File(shop_image_path, filename="shop.png")
-    
-    # Envoyer un NOUVEAU message pour le shop
-    if file:
-        view.shop_message = await interaction.channel.send(
-            content="",
-            embed=view.get_shop_embed(),
-            view=view,
-            file=file
-        )
-    else:
-        view.shop_message = await interaction.channel.send(
-            content="",
-            embed=view.get_shop_embed(),
-            view=view
-        )
+    try:
+        print("DEBUG SHOP: Création de ShopView...")
+        view = ShopView(user_id, region, joueur, on_continue_callback)
+        view.channel = interaction.channel  # Garder la référence du canal
+        print(f"DEBUG SHOP: ShopView créée, channel={view.channel}")
+        
+        # Essayer de charger une image de fond pour le shop
+        shop_image_path = f"images/shops/{region}.png"
+        file = None
+        if os.path.exists(shop_image_path):
+            print(f"DEBUG SHOP: Image trouvée: {shop_image_path}")
+            file = discord.File(shop_image_path, filename="shop.png")
+        else:
+            print(f"DEBUG SHOP: Pas d'image pour {shop_image_path}")
+        
+        print("DEBUG SHOP: Création de l'embed...")
+        embed = view.get_shop_embed()
+        print(f"DEBUG SHOP: Embed créé: {embed.title}")
+        
+        # Envoyer un NOUVEAU message pour le shop
+        print("DEBUG SHOP: Envoi du message shop...")
+        if file:
+            view.shop_message = await interaction.channel.send(
+                content="",
+                embed=embed,
+                view=view,
+                file=file
+            )
+        else:
+            view.shop_message = await interaction.channel.send(
+                content="",
+                embed=embed,
+                view=view
+            )
+        print(f"DEBUG SHOP: Message shop envoyé! ID={view.shop_message.id}")
+        
+    except Exception as e:
+        print(f"❌ ERREUR DANS AFFICHER_SHOP: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
