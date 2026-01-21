@@ -1,46 +1,56 @@
 [
-    {
-      "id": 3,
+  {
+      "id": 1,
+      "nom": "Potion de Soin",
+      "emoji": "🧪",
+      "prix": 25,
+      "type": "potion",
+      "data": {
+          "heal": 20
+      }
+  },
+  {
+      "id": 2,
       "nom": "Armure de Bois",
       "emoji": "🛡️",
       "prix": 40,
       "type": "stat",
       "data": {
-        "stat": "armure",
-        "value": 5
+          "stat": "armure",
+          "value": 5
       }
-    },
-    {
-      "id": 4,
+  },
+  {
+      "id": 3,
       "nom": "Agilité Forestière",
       "emoji": "⚡",
       "prix": 35,
       "type": "stat",
       "data": {
-        "stat": "vitesse",
-        "value": 8
+          "stat": "vitesse",
+          "value": 8
       }
-    },
-    {
-      "id": 5,
+  },
+  {
+      "id": 4,
       "nom": "Force de la Nature",
       "emoji": "⚔️",
       "prix": 45,
       "type": "stat",
       "data": {
-        "stat": "force",
-        "value": 5
+          "stat": "force",
+          "value": 5
       }
-    },
-    {
-      "id": 6,
+  },
+  {
+      "id": 5,
       "nom": "Endurance de la Foret",
       "emoji": "💚",
       "prix": 50,
       "type": "stat",
       "data": {
-        "stat": "pv_max",
-        "value": 20
+          "stat": "pv_max",
+          "value": 20
       }
-    }
-  ]
+  }
+]

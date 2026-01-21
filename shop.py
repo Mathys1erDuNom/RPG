@@ -51,6 +51,8 @@ class ShopView(View):
             description = f"💰 {item['prix']}G"
             if item['type'] == 'attaque':
                 description += f" | ⚔️ {item['data']['degats']} dégâts"
+            elif item['type'] == 'potion':
+                description += f" | 💚 Restaure {item['data']['heal']} PV"
             elif item['type'] == 'stat':
                 stat_names = {
                     'force': '⚔️ Force',
@@ -101,6 +103,11 @@ class ShopView(View):
                     f"🎯 Type : **{atk['type']}**\n"
                     f"📊 Ratio Force : **{atk.get('ratioattk', 0)}%** | "
                     f"Magie : **{atk.get('ratiomagie', 0)}%**"
+                )
+            elif item['type'] == 'potion':
+                value = (
+                    f"💰 Prix : **{item['prix']}G**\n"
+                    f"💚 Restaure : **{item['data']['heal']} PV**"
                 )
             elif item['type'] == 'stat':
                 stat_display = {
@@ -178,15 +185,25 @@ class ShopView(View):
             self.joueur['attaques'].append(item['data'])
             message = f"✅ Vous avez appris **{item['nom']}** !"
         
+        elif item['type'] == 'potion':
+            # Restaurer des PV sans dépasser le maximum
+            heal = item['data']['heal']
+            pv_avant = self.joueur['pv']
+            self.joueur['pv'] = min(self.joueur['pv'] + heal, self.joueur['pv_max'])
+            pv_restaures = self.joueur['pv'] - pv_avant
+            message = f"✅ Vous utilisez **{item['nom']}** et restaurez **{pv_restaures} PV** !"
+        
         elif item['type'] == 'stat':
             # Augmenter la stat
             stat = item['data']['stat']
             value = item['data']['value']
             self.joueur[stat] += value
             
-            # Si c'est pv_max, restaurer aussi les PV
+            # Si c'est pv_max, augmenter les PV actuels proportionnellement
+            # mais NE PAS restaurer à 100%
             if stat == 'pv_max':
-                self.joueur['pv'] += value
+                # Seulement ajouter la différence, pas restaurer complètement
+                self.joueur['pv'] = min(self.joueur['pv'] + value, self.joueur['pv_max'])
             
             stat_names = {
                 'force': 'Force',

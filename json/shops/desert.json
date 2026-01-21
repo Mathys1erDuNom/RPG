@@ -1,49 +1,56 @@
 [
-    {
+  {
       "id": 1,
-      "nom": "Tempête de Sable",
-      "emoji": "🌪️",
-      "prix": 65,
-      "type": "attaque",
+      "nom": "Potion de Soin",
+      "emoji": "🧪",
+      "prix": 25,
+      "type": "potion",
       "data": {
-        "nom": "Tempête de Sable",
-        "degats": 30,
-        "type": "hybride",
-        "ratioattk": 30,
-        "ratiomagie": 50
+          "heal": 20
       }
-    },
-    {
+  },
+  {
+      "id": 2,
+      "nom": "Armure de Bois",
+      "emoji": "🛡️",
+      "prix": 40,
+      "type": "stat",
+      "data": {
+          "stat": "armure",
+          "value": 5
+      }
+  },
+  {
       "id": 3,
-      "nom": "Endurance du Désert",
+      "nom": "Agilité Forestière",
+      "emoji": "⚡",
+      "prix": 35,
+      "type": "stat",
+      "data": {
+          "stat": "vitesse",
+          "value": 8
+      }
+  },
+  {
+      "id": 4,
+      "nom": "Force de la Nature",
+      "emoji": "⚔️",
+      "prix": 45,
+      "type": "stat",
+      "data": {
+          "stat": "force",
+          "value": 5
+      }
+  },
+  {
+      "id": 5,
+      "nom": "Endurance de la Foret",
       "emoji": "💚",
       "prix": 50,
       "type": "stat",
       "data": {
-        "stat": "pv_max",
-        "value": 20
+          "stat": "pv_max",
+          "value": 20
       }
-    },
-    {
-      "id": 4,
-      "nom": "Magie Ardente",
-      "emoji": "🔮",
-      "prix": 55,
-      "type": "stat",
-      "data": {
-        "stat": "magie",
-        "value": 10
-      }
-    },
-    {
-      "id": 5,
-      "nom": "Bouclier Mystique",
-      "emoji": "✨",
-      "prix": 45,
-      "type": "stat",
-      "data": {
-        "stat": "armure_magique",
-        "value": 10
-      }
-    }
-  ]
+  }
+]
