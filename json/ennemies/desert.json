@@ -1,54 +1,40 @@
 [
   {
-    "nom": "Gobelin",
+    "nom": "Homme scorpion",
     "pv": 50,
     "pv_max": 50,
     "vitesse": 9,
     "force": 12,
-    "magie": 2,
-    "armure": 5,
-    "armure_magique": 5,
-    "image": "images/region/desert/ennemies/gobelin.png",
+    "magie": 0,
+    "armure": 15,
+    "armure_magique": 0,
+    "image": "images/region/desert/ennemies/scorpion.png",
     "attaques": [
       {
-        "nom": "Morsure",
-        "degats": 15,
+        "nom": "Pique",
+        "degats": 20,
         "type": "physique",
         "ratioattk": 100,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Griffe",
-        "degats": 10,
-        "type": "physique",
-        "ratioattk": 80,
         "ratiomagie": 0
       }
     ]
   },
   {
-    "nom": "Gobelin2",
-    "pv": 50,
-    "pv_max": 50,
+    "nom": "Taupe",
+    "pv": 40,
+    "pv_max": 40,
     "vitesse": 9,
-    "force": 12,
-    "magie": 2,
-    "armure": 5,
-    "armure_magique": 5,
-    "image": "images/region/desert/ennemies/gobelin.png",
+    "force": 8,
+    "magie": 0,
+    "armure": 30,
+    "armure_magique": 0,
+    "image": "images/region/desert/ennemies/taupe.png",
     "attaques": [
       {
-        "nom": "Morsure",
+        "nom": "Griffe",
         "degats": 15,
         "type": "physique",
         "ratioattk": 100,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Griffe",
-        "degats": 10,
-        "type": "physique",
-        "ratioattk": 80,
         "ratiomagie": 0
       }
     ]

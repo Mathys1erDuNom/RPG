@@ -1,18 +1,17 @@
 [
-  
   {
-    "nom": "Femme Orc",
-    "pv": 55,
-    "pv_max": 55,
-    "vitesse": 9,
+    "nom": "Ours Punk",
+    "pv": 60,
+    "pv_max": 60,
+    "vitesse": 5,
     "force": 30,
-    "magie": 2,
-    "armure": 5,
+    "magie": 0,
+    "armure": 40,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/orcF.png",
+    "image": "images/region/foret/ennemies/orcH.png",
     "attaques": [
       {
-        "nom": "Coup de massue",
+        "nom": "Morsure",
         "degats": 20,
         "type": "physique",
         "ratioattk": 80,
@@ -20,36 +19,76 @@
       },
       {
         "nom": "Griffe",
-        "degats": 10,
+        "degats": 15,
         "type": "physique",
-        "ratioattk": 50,
+        "ratioattk": 90,
         "ratiomagie": 0
       }
     ]
   },
   {
-    "nom": "Orc",
-    "pv": 70,
-    "pv_max": 70,
-    "vitesse": 5,
-    "force": 40,
-    "magie": 2,
-    "armure": 5,
+    "nom": "Cerf",
+    "pv": 50,
+    "pv_max": 50,
+    "vitesse": 9,
+    "force": 15,
+    "magie": 0,
+    "armure": 15,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/orcH.png",
+    "image": "images/region/foret/ennemies/cerf.png",
     "attaques": [
       {
-        "nom": "Coup de massue",
+        "nom": "Coup de corne",
         "degats": 20,
         "type": "physique",
-        "ratioattk": 80,
+        "ratioattk": 120,
+        "ratiomagie": 0
+      }
+    ]
+  },
+  {
+    "nom": "Gobelin",
+    "pv": 50,
+    "pv_max": 50,
+    "vitesse": 9,
+    "force": 8,
+    "magie": 0,
+    "armure": 0,
+    "armure_magique": 5,
+    "image": "images/region/foret/ennemies/cerf.png",
+    "attaques": [
+      {
+        "nom": "Morsure",
+        "degats": 20,
+        "type": "physique",
+        "ratioattk": 120,
+        "ratiomagie": 0
+      }
+    ]
+  },
+  {
+    "nom": "Gobelin à lance",
+    "pv": 50,
+    "pv_max": 50,
+    "vitesse": 9,
+    "force": 8,
+    "magie": 0,
+    "armure": 0,
+    "armure_magique": 5,
+    "image": "images/region/foret/ennemies/cerf.png",
+    "attaques": [
+      {
+        "nom": "Morsure",
+        "degats": 20,
+        "type": "physique",
+        "ratioattk": 120,
         "ratiomagie": 0
       },
       {
-        "nom": "Griffe",
-        "degats": 10,
+        "nom": "Coup de lance",
+        "degats": 30,
         "type": "physique",
-        "ratioattk": 50,
+        "ratioattk": 120,
         "ratiomagie": 0
       }
     ]
