@@ -14,14 +14,14 @@
         "nom": "Morsure",
         "degats": 20,
         "type": "physique",
-        "ratioattk": 80,
+        "ratioattk": 50,
         "ratiomagie": 0
       },
       {
         "nom": "Griffe",
         "degats": 15,
         "type": "physique",
-        "ratioattk": 90,
+        "ratioattk": 50,
         "ratiomagie": 0
       }
     ]
@@ -41,7 +41,7 @@
         "nom": "Coup de corne",
         "degats": 20,
         "type": "physique",
-        "ratioattk": 120,
+        "ratioattk": 90,
         "ratiomagie": 0
       }
     ]
@@ -61,7 +61,7 @@
         "nom": "Morsure",
         "degats": 20,
         "type": "physique",
-        "ratioattk": 120,
+        "ratioattk": 80,
         "ratiomagie": 0
       }
     ]
@@ -88,7 +88,7 @@
         "nom": "Coup de lance",
         "degats": 30,
         "type": "physique",
-        "ratioattk": 120,
+        "ratioattk": 50,
         "ratiomagie": 0
       }
     ]
