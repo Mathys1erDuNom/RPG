@@ -230,18 +230,27 @@ class CombatView(View):
                 return
             else:
                 # Région terminée - Supprimer le message de combat AVANT d'afficher le shop
-                if self.combat_message:
-                    try:
+                print(f"DEBUG: Région terminée. combat_message={self.combat_message}, regions_queue={len(self.regions_queue)}")
+                try:
+                    # Essayer d'abord avec combat_message
+                    if self.combat_message:
+                        print("DEBUG: Suppression via combat_message")
                         await self.combat_message.delete()
-                    except Exception as e:
-                        print(f"Erreur suppression message: {e}")
+                    # Sinon essayer avec interaction.message
+                    elif interaction.message:
+                        print("DEBUG: Suppression via interaction.message")
+                        await interaction.message.delete()
+                except Exception as e:
+                    print(f"Erreur suppression message: {e}")
                 
                 if self.regions_queue:
+                    print("DEBUG: Il reste des régions, affichage du shop")
                     # Il reste des régions - afficher le message de victoire puis le shop
                     await interaction.channel.send(
                         f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                     )
                     
+                    print("DEBUG: Appel afficher_shop")
                     # Afficher le shop
                     await afficher_shop(
                         interaction,
@@ -250,6 +259,7 @@ class CombatView(View):
                         self.joueur,
                         self.continuer_vers_prochaine_region
                     )
+                    print("DEBUG: afficher_shop terminé")
                 else:
                     # C'était la dernière région - victoire finale directe
                     fin_image_path = "images/fin/fin.png"
