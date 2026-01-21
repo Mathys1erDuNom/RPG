@@ -215,6 +215,7 @@ class CombatView(View):
         degats = calcul_degats(attaque, self.joueur, self.ennemi)
         self.ennemi["pv"] -= degats
 
+        # ============ ZONE MODIFIÉE - LIGNE 232 à 275 ============
         # Ennemi KO
         if self.ennemi["pv"] <= 0:
             if self.ennemis_queue:
@@ -228,13 +229,10 @@ class CombatView(View):
                 )
                 return
             else:
-                # Région terminée - TOUJOURS supprimer le message de combat IMMÉDIATEMENT
-                message_to_delete = self.combat_message
-                self.combat_message = None  # Réinitialiser d'abord
-                
-                if message_to_delete:
+                # Région terminée - Supprimer le message de combat AVANT d'afficher le shop
+                if self.combat_message:
                     try:
-                        await message_to_delete.delete()
+                        await self.combat_message.delete()
                     except Exception as e:
                         print(f"Erreur suppression message: {e}")
                 
@@ -276,6 +274,7 @@ class CombatView(View):
                     supprimer_personnage(self.user_id)
                     
                 return
+        # =========================================================
 
         # Passage au tour de l'ennemi
         self.tour_joueur = False
