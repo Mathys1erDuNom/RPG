@@ -6,7 +6,7 @@
     "pv": 100,
     "pv_max": 100,
     "vitesse": 10,
-    "force": 20,
+    "force": 35,
     "magie": 5,
     "armure": 30,
     "armure_magique": 20,
@@ -14,9 +14,9 @@
     "attaques": [
       {
         "nom": "Coup d'épée",
-        "degats": 20,
+        "degats": 25,
         "type": "physique",
-        "ratioattk": 80,
+        "ratioattk": 90,
         "ratiomagie": 0
       }
     ]
