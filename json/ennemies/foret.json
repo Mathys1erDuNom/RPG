@@ -8,7 +8,7 @@
     "magie": 0,
     "armure": 40,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/orcH.png",
+    "image": "images/region/foret/ennemies/Ours_Punk.png",
     "attaques": [
       {
         "nom": "Morsure",
@@ -55,7 +55,7 @@
     "magie": 0,
     "armure": 0,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/cerf.png",
+    "image": "images/region/foret/ennemies/gobelin.png",
     "attaques": [
       {
         "nom": "Morsure",
@@ -75,7 +75,7 @@
     "magie": 0,
     "armure": 0,
     "armure_magique": 5,
-    "image": "images/region/foret/ennemies/cerf.png",
+    "image": "images/region/foret/ennemies/gobelin_lance.png",
     "attaques": [
       {
         "nom": "Morsure",
