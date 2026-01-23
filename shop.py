@@ -191,6 +191,11 @@ class ShopView(View):
             pv_avant = self.joueur['pv']
             self.joueur['pv'] = min(self.joueur['pv'] + heal, self.joueur['pv_max'])
             pv_restaures = self.joueur['pv'] - pv_avant
+            
+            # 🔧 CORRECTION : Sauvegarder les PV dans la base de données
+            from personnage_db import update_personnage_pv
+            update_personnage_pv(self.user_id, self.joueur['pv'])
+            
             message = f"✅ Vous utilisez **{item['nom']}** et restaurez **{pv_restaures} PV** !"
         
         elif item['type'] == 'stat':
