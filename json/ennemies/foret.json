@@ -1,94 +1,47 @@
 [
   {
-    "nom": "Ours Punk",
-    "pv": 60,
-    "pv_max": 60,
-    "vitesse": 5,
-    "force": 30,
-    "magie": 0,
-    "armure": 40,
-    "armure_magique": 5,
-    "image": "images/region/foret/ennemies/Ours_Punk.png",
-    "attaques": [
-      {
-        "nom": "Morsure",
-        "degats": 20,
-        "type": "physique",
-        "ratioattk": 50,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Griffe",
-        "degats": 15,
-        "type": "physique",
-        "ratioattk": 50,
-        "ratiomagie": 0
-      }
-    ]
-  },
-  {
-    "nom": "Cerf",
-    "pv": 50,
-    "pv_max": 50,
-    "vitesse": 9,
-    "force": 15,
-    "magie": 0,
-    "armure": 15,
-    "armure_magique": 5,
-    "image": "images/region/foret/ennemies/cerf.png",
-    "attaques": [
-      {
-        "nom": "Coup de corne",
-        "degats": 20,
-        "type": "physique",
-        "ratioattk": 90,
-        "ratiomagie": 0
-      }
-    ]
-  },
-  {
-    "nom": "Gobelin",
+    "nom": "Trool",
     "pv": 50,
     "pv_max": 50,
     "vitesse": 9,
     "force": 8,
     "magie": 0,
-    "armure": 0,
-    "armure_magique": 5,
-    "image": "images/region/foret/ennemies/gobelin.png",
+    "armure": 10,
+    "armure_magique": 0,
+    "image": "images/region/foret/ennemies/trool/default.png",
     "attaques": [
       {
-        "nom": "Morsure",
+        "nom": "Coup de Massue",
         "degats": 20,
         "type": "physique",
         "ratioattk": 80,
         "ratiomagie": 0
+      },
+      {
+        "nom": "Morsure",
+        "degats": 30,
+        "type": "physique",
+        "ratioattk": 50,
+        "ratiomagie": 0
       }
     ]
   },
   {
-    "nom": "Gobelin à lance",
-    "pv": 50,
-    "pv_max": 50,
+    "nom": "Archer Trool",
+    "pv": 40,
+    "pv_max": 40,
     "vitesse": 9,
-    "force": 8,
+    "force": 5,
     "magie": 0,
-    "armure": 0,
-    "armure_magique": 5,
-    "image": "images/region/foret/ennemies/gobelin_lance.png",
+    "armure": 5,
+    "armure_magique": 0,
+    "image": "images/region/foret/ennemies/trool/archer.png",
     "attaques": [
       {
-        "nom": "Morsure",
-        "degats": 20,
+        "nom": "Flèche perçante",
+        "degats": 25,
         "type": "physique",
-        "ratioattk": 120,
-        "ratiomagie": 0
-      },
-      {
-        "nom": "Coup de lance",
-        "degats": 30,
-        "type": "physique",
-        "ratioattk": 50,
+        "ratioattk": 10,
         "ratiomagie": 0
       }
     ]
