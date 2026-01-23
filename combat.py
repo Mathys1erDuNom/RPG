@@ -217,7 +217,6 @@ class CombatView(View):
         degats = calcul_degats(attaque, self.joueur, self.ennemi)
         self.ennemi["pv"] -= degats
 
-        # ============ ZONE MODIFIÉE - LIGNE 232 à 275 ============
         # Ennemi KO
         if self.ennemi["pv"] <= 0:
             if self.ennemis_queue:
@@ -232,27 +231,22 @@ class CombatView(View):
                 return
             else:
                 # Région terminée - Supprimer le message de combat AVANT d'afficher le shop
-                print(f"DEBUG: Région terminée. combat_message={self.combat_message}, regions_queue={len(self.regions_queue)}")
                 try:
                     # Essayer d'abord avec combat_message
                     if self.combat_message:
-                        print("DEBUG: Suppression via combat_message")
                         await self.combat_message.delete()
                     # Sinon essayer avec interaction.message
                     elif interaction.message:
-                        print("DEBUG: Suppression via interaction.message")
                         await interaction.message.delete()
                 except Exception as e:
                     print(f"Erreur suppression message: {e}")
                 
                 if self.regions_queue:
-                    print("DEBUG: Il reste des régions, affichage du shop")
                     # Il reste des régions - afficher le message de victoire puis le shop
                     await interaction.channel.send(
                         f"💥 **{attaque['nom']} inflige {degats} PV !**\n🎉 **Région {self.region.capitalize()} terminée !**"
                     )
                     
-                    print("DEBUG: Appel afficher_shop")
                     # Afficher le shop
                     await afficher_shop(
                         interaction,
@@ -261,7 +255,6 @@ class CombatView(View):
                         self.joueur,
                         self.continuer_vers_prochaine_region
                     )
-                    print("DEBUG: afficher_shop terminé")
                 else:
                     # C'était la dernière région - victoire finale directe
                     fin_image_path = "images/fin/fin.png"
@@ -286,7 +279,6 @@ class CombatView(View):
                     supprimer_personnage(self.user_id)
                     
                 return
-        # =========================================================
 
         # Passage au tour de l'ennemi
         self.tour_joueur = False
@@ -299,13 +291,34 @@ class CombatView(View):
         self.joueur["pv"] -= degats
 
         if self.joueur["pv"] <= 0:
-            # Joueur KO - afficher le message de défaite
-            await self.update_message(
-                interaction,
-                extra_text=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
-                           f"💀 **Vous avez été vaincu...**\n"
-                           f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
-            )
+            # Joueur KO - afficher l'image de défaite
+            defaite_image_path = "images/fin/defaite.png"
+            
+            # Supprimer d'abord le message de combat
+            try:
+                if self.combat_message:
+                    await self.combat_message.delete()
+                elif interaction.message:
+                    await interaction.message.delete()
+            except Exception as e:
+                print(f"Erreur suppression message: {e}")
+            
+            # Envoyer le message de défaite avec l'image si elle existe
+            if os.path.exists(defaite_image_path):
+                file = discord.File(fp=defaite_image_path, filename="defaite.png")
+                await interaction.channel.send(
+                    content=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
+                            f"💀 **Vous avez été vaincu...**\n"
+                            f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**",
+                    file=file
+                )
+            else:
+                # Pas d'image, juste le message
+                await interaction.channel.send(
+                    content=f"💥 **{self.ennemi['nom']} inflige {degats} PV avec {attaque['nom']} !**\n"
+                            f"💀 **Vous avez été vaincu...**\n"
+                            f"🔄 **Votre personnage a été supprimé. Créez-en un nouveau avec `/creer_personnage` !**"
+                )
             
             # Supprimer complètement le personnage (attaques et stats comprises)
             supprimer_personnage(self.user_id)
