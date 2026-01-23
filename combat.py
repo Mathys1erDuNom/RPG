@@ -150,15 +150,13 @@ class CombatView(View):
             if os.path.exists(fin_image_path):
                 file = discord.File(fp=fin_image_path, filename="fin.png")
                 await channel.send(
-                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                       ,
+                    content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n",
                     file=file
                 )
             else:
                 # Pas d'image, juste le message
                 await channel.send(
                     content=f"🏆 **Félicitations ! Vous avez vaincu toutes les régions !**\n"
-                           
                 )
             
             # Supprimer complètement le personnage
@@ -178,15 +176,19 @@ class CombatView(View):
         # Mettre à jour le select d'attaques au cas où de nouvelles ont été achetées
         self.update_attack_select()
         
-        # Restaurer les PV du joueur pour la nouvelle région
-        self.joueur['pv'] = self.joueur['pv_max']
-        update_personnage_pv(self.user_id, self.joueur['pv'])
+        # 🔧 CORRECTION : Recharger les PV depuis la DB au lieu de forcer pv_max
+        # Cela permet de conserver les PV actuels après le shop (potions, etc.)
+        joueur_db = get_personnage(self.user_id)
+        if joueur_db:
+            self.joueur['pv'] = joueur_db['pv']
+        # Si vous voulez restaurer à 100% entre les régions, décommentez la ligne suivante :
+        # self.joueur['pv'] = self.joueur['pv_max']
+        # update_personnage_pv(self.user_id, self.joueur['pv'])
         
         # Créer un NOUVEAU message de combat
         file = self.get_combat_image()
         content = self.pv_text()
         content += f"🗺️ **Nouvelle région : {self.region.capitalize()} !**\n"
-        content += f"💚 **Vos PV ont été restaurés !**\n"
         content += f"👾 **Premier ennemi : {self.ennemi['nom']} !**\n"
         content += "🟢 **C'est votre tour !**" if self.tour_joueur else "🔴 **Tour de l'ennemi...**"
         
@@ -195,7 +197,7 @@ class CombatView(View):
             content=content,
             view=self if self.tour_joueur else None,
             file=file
-        )
+    )
 
     async def joueur_attaque(self, interaction: discord.Interaction):
         # Vérifier que c'est bien le joueur qui a lancé le combat
