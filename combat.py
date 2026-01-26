@@ -18,8 +18,7 @@ from shop import afficher_shop
 
 # ===== CONFIGURATION DES RÉGIONS =====
 REGIONS_DISPONIBLES = [
-    "foret",
-    "desert"
+    "foret"
 ]
 # =====================================
 
