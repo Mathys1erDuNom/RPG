@@ -45,6 +45,33 @@
         "ratiomagie": 0
       }
     ]
+  },
+  {
+    "nom": "Lady Jeanne",
+    "pv": 55,
+    "pv_max": 55,
+    "vitesse": 9,
+    "force": 15,
+    "magie": 0,
+    "armure": 20,
+    "armure_magique": 0,
+    "image": "images/region/foret/ennemies/trool/lady.png",
+    "attaques": [
+      {
+        "nom": "Claque de Lady Jeanne",
+        "degats": 25,
+        "type": "physique",
+        "ratioattk": 70,
+        "ratiomagie": 0
+      },
+      {
+        "nom": "Coup d'éventail de Lady Jeanne",
+        "degats": 10,
+        "type": "physique",
+        "ratioattk": 50,
+        "ratiomagie": 0
+      }
+    ]
   }
   
 ]
