@@ -20,8 +20,8 @@ def creer_image_combat(joueur, ennemi, fond_path="images/region/fond.png"):
     ennemi_img = ennemi_img.resize((250, 250))
     
     # Coller sur le fond
-    fond.paste(perso_img, (50, fond.height - 270), perso_img)
-    fond.paste(ennemi_img, (fond.width - 350, 50), ennemi_img)
+    fond.paste(perso_img, (120, fond.height - 270), perso_img)
+    fond.paste(ennemi_img, (fond.width - 400, fond.height - 270), ennemi_img)
     
     # Dessiner barres de PV
     draw = ImageDraw.Draw(fond)
